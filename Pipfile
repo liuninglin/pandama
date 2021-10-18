@@ -13,6 +13,8 @@ django-environ = "*"
 djangorestframework = "*"
 gunicorn = "*"
 psycopg2 = "*"
+djongo = "*"
+django-elasticsearch-dsl = "*"
 
 [dev-packages]
 
