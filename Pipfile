@@ -12,6 +12,7 @@ mongoengine = "*"
 django-environ = "*"
 djangorestframework = "*"
 gunicorn = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
