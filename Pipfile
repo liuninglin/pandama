@@ -15,6 +15,7 @@ gunicorn = "*"
 psycopg2 = "*"
 djongo = "*"
 django-elasticsearch-dsl = "*"
+celery = "*"
 
 [dev-packages]
 

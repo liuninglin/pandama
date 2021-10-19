@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_elasticsearch_dsl',
+    # 'django_elasticsearch_dsl',
     'apps.customers',
     'apps.orders',
     'apps.carts',
@@ -88,6 +88,9 @@ DATABASES = {
     'mongoDB': {
         'ENGINE': 'djongo',
         'NAME': 'test',
+        'CLIENT': {
+            'host': 'mongodb://localhost:30001/test?retryWrites=true&w=majority'
+        }  
     }
 }
 
@@ -111,11 +114,14 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
 # Elasticsearch
-ELASTICSEARCH_DSL={
-    'default': {
-        'hosts': 'localhost:9200'
-    },
-}
+# ELASTICSEARCH_DSL={
+#     'default': {
+#         'hosts': 'localhost:9200'
+#     },
+# }
+
+
+CELERY_BROKER_URL = 'amqp://localhost'
 
 
 # Password validation
