@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django_user_agents.middleware.UserAgentMiddleware',
     'apps.commons.request_intercept_middleware.browser_check',
     # 'django.middleware.cache.FetchFromCacheMiddleware',           # page caching
+    'kolo.middleware.KoloMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
