@@ -1,0 +1,111 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+{% block header %}
+<div class="container h-100 d-flex align-items-center justify-content-between">
+    <!-- Back Button-->
+    <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a></div>
+    <!-- Page Title-->
+    <div class="page-heading">
+        <h6 class="mb-0">Billing Information</h6>
+    </div>
+    <!-- Navbar Toggler-->
+    <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler">
+        <span></span><span></span><span></span></div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<!-- Checkout Wrapper-->
+<form method="post" action="{% url 'store_orders_single_pay_page' %}" name="buy" id="buy">
+
+    <input type="hidden" name="sku_number" value={{sku_number}}>
+    <input type="hidden" name="quantity" value={{quantity}}>
+
+    <div class="checkout-wrapper-area py-3">
+        <!-- Billing Address-->
+        <div class="billing-information-card mb-4" data-step="1" data-intro="Billing information grabbed from your profile, and you can also change these value for current order.">
+            <div class="card  bg-success">
+                <div class="card-body">
+                    <h6 class="text-center mb-0 text-white">Edit Billing Information</h6>
+                </div>
+            </div>
+
+
+            <div class="card user-data-card">
+                <div class="card-body">
+                    <div class="single-profile-data d-flex align-items-center justify-content-between">
+                        <div class="title"><i class="lni-user"></i><span>Full Name</span></div>
+
+                        <input class="form-control" type="text" name="FullName" id="FullName" value="{{FullName}}">
+                        <!--<div class="data-content">{{FullName}}</div>-->
+                    </div>
+
+                    <div class="single-profile-data d-flex align-items-center justify-content-between">
+                        <div class="title"><i class="lni-envelope"></i><span>Email Address</span></div>
+                        <input class="form-control" type="text" name="Email" id="Email" value={{Email}}>
+                        <!--<div class="data-content">{{Email}} </div>-->
+                    </div>
+
+                    <div class="single-profile-data d-flex align-items-center justify-content-between">
+                        <div class="title"><i class="lni-phone-handset"></i><span>Phone</span></div>
+                        <input class="form-control" type="text" name="Phone" id="Phone" value={{Phone}}>
+                        <!--<div class="data-content">{{Phone}} </div>-->
+                    </div>
+                    <div class="single-profile-data d-flex align-items-center justify-content-between">
+                        <div class="title"><i class="lni-map-marker"></i><span>Shipping Address</span></div>
+                        <input class="form-control" type="text" name="Shipping" id="Shipping" value="{{Shipping}}">
+                        <!--<div class="data-content">{{Shipping}} </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card cart-amount-area">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <h5 class="total-price mb-0">$<span class="counter">{{ total_price|stringformat:".2f" }}</span></h5>
+
+                <button type="submit" class="btn btn-warning">Confirm &amp; Pay</button>
+                <!--<a href=""></a>-->
+            </div>
+        </div>
+    </div>
+    {% csrf_token %}
+
+</form>
+{% endblock %}
+
+
+{% block extrascripts %}
+<script>
+    if ($.cookie('intro-complete-checkout') == undefined){
+        introJs().start().oncomplete(function(targetElement) {
+            $.cookie('intro-complete-checkout', true);  
+        }).onexit(function(){
+            $.cookie('intro-complete-checkout', true);   
+        });
+    }
+
+    $('#buy').submit(function(){
+
+
+   
+
+    if ($('#Email').val().length < 1 || $('#FullName').val().length < 1 || $('#Shipping').val().length < 1 || $('#Phone').val().length < 1) {
+         alertShow("error", "Please fill the form!");
+         return false;
+    }
+
+
+
+
+    });
+
+
+
+
+</script>
+{% endblock %}
+
+
+
+

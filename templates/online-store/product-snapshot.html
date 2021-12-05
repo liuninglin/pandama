@@ -1,0 +1,33 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+{% load tz %}
+
+{% block header %}
+      <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Back Button-->
+        <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a></div>
+        <!-- Page Title-->
+        <div class="page-heading">
+          <h6 class="mb-0">Product Snapshot</h6>
+        </div>
+        <!-- Navbar Toggler-->
+        <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler"><span></span><span></span><span></span></div>
+      </div>
+{% endblock %}
+
+{% block content %}
+<div class="product-catagories-wrapper pt-3">
+  <div class="container">
+    <div class="section-heading">
+      <h6 class="ml-1">Product Snapshot Created in <br/>{{ created_time|timezone:'US/Eastern' }}</h6>
+    </div>
+    <div class="product-catagory-wrap">
+      <br/>
+      <img src="{{ pdp_screenshot_url }}" style="width: 100%;">
+      <br/>
+      <br/>
+      <br/>
+    </div>
+  </div>
+</div>
+{% endblock %}

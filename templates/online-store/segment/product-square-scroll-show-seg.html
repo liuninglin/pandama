@@ -1,0 +1,93 @@
+{% load static %}
+
+
+{% for single_order in orders %}
+
+{% if single_order.status == 0 %}
+<div class="p-specification bg-warning text-white mb-3 py-3" style="border-radius: 8px;padding: 20px;font-size:16px;font-weight:bold;">
+{% elif single_order.status == 1 %}
+<div class="p-specification bg-info text-white mb-3 py-3" style="border-radius: 8px;">
+{% elif single_order.status == 2 %} 
+<div class="p-specification bg-success text-white mb-3 py-3" style="border-radius: 8px;">
+{% endif %}
+
+    <div class="row"> 
+        <div class="col-6">Order ID:</div> 
+        <div class="col-6 text-right">{{single_order.id}}</div>
+    </div>
+    <div class="row"> 
+        <div class="col-6">Order Time:</div>
+        <div class="col-6 text-right">{{single_order.created_time|date:'Y-m-d H:i'}}</div>
+    </div>
+    <div class="row"> 
+        <div class="col-6">Total Price:</div>
+        <div class="col-6 text-right">${{single_order.total_price}}</div>
+    </div>
+
+    
+    <div class="row"> 
+        <div class="col-6">Order Status:</div>
+        <div class="col-6 text-right">
+        {% if single_order.status == 0 %}
+        <i class="fas fa-box-open" style="font-size: 20px;"></i> Packaging
+        {% elif single_order.status == 1 %}
+        <i class="fas fa-shipping-fast" style="font-size: 20px;"></i> Shipping
+        {% elif single_order.status == 2 %} 
+        <i class="fas fa-check" style="font-size: 20px;"></i> Delivered
+        {% endif %}
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="flash-order-history-shows owl-carousel" 
+    
+    >
+        {% for item in single_order.orderitems.all %}
+        {% if single_order.id == item.order.id %}
+        
+        <div class="card top-product-card mb-3"
+            {% if forloop.counter == 1 and forloop.parentloop.counter == 1 %}
+        data-step="1" data-intro="You can scroll to "
+        {% endif %}
+
+        >
+            <div class="card-body">
+                <a class="product-thumbnail d-block"
+                   href="{% url 'store_products_product_detail_page' %}?sku={{ item.product_sku }}">
+                    <img class="mb-2" src="{{ product_img_prefix }}{{ item.product_img }}" alt="{{ item.product_name }}"
+                         style="height: 150px" onerror="this.src='{% static "online-store/img/core-img/not_found.png"%}'">
+                </a>
+                <a class="product-title d-block"
+                   href="{% url 'store_products_product_detail_page' %}?sku={{ item.product_sku }}">
+                    <p style="
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: black;
+          height: 3em">
+                        {{ item.product_name }}
+                    </p>
+                </a>
+                <a class="btn btn-warning text-white" onclick="showProductSnapshot('{{ item.id }}')" target="_blank"
+                {% if forloop.counter == 1 and forloop.parentloop.counter == 1 %}
+                data-step="2" data-intro="You can click to see the screenshot of the product when you submitted the order."
+                {% endif %}
+                style="margin-bottom: 28px;"
+                >
+                    <i class="fas fa-history"></i></a>
+                <p class="sale-price">qty: {{ item.amount }}</p>
+                <p class="sale-price">price: ${{ item.product_current_price }}</p>
+            </div>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+    </div>
+
+
+</div>
+{% endfor %}
+

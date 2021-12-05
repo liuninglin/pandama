@@ -1,0 +1,507 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+{% load split %}
+
+{% block header %}
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+      <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Back Button-->
+        <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a></div>
+        <!-- Search Form-->
+        <div class="top-search-form">
+          <form action="product-list" method="GET">
+            <input class="form-control" type="search" id="product_search_input" name="search" placeholder="Enter your keyword" data-step="1" data-intro="You can search everything no matter using english or chinese. &#129321;">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+        <!-- Filter Option-->
+        <div class="filter-option" id="suhaNavbarToggler" data-step="2" data-intro="Product filters to help you find what you want. &#129321;"><i class="lni-cog"></i></div>
+      </div>
+    </div>
+
+    <!-- Side Nav Wrapper-->
+    <div class="suha-sidenav-wrapper filter-nav" id="sidenavWrapper">
+     <!-- Catagory Sidebar Area-->
+      <div class="catagory-sidebar-area">
+        <!-- Filter Title-->
+
+        <div style="width: 100%;height: 35px;font-size: 17px;">
+          
+          
+          {% if request.GET.sort_by == "current_price" and request.GET.sort_order == "asc" %}
+          <div style="float: left; width: 33%;color: #00B894;" class="order-selector" onclick="chooseOrder(this, 'current_price', 'asc')">
+          {% else %}
+          <div style="float: left; width: 33%;color: gray;" class="order-selector" onclick="chooseOrder(this, 'current_price', 'asc')">
+          {% endif %}
+          
+
+            <span>$</span>
+            <i class="fas fa-long-arrow-alt-up"></i>
+          </div>
+          
+          
+          {% if request.GET.sort_by == "current_price" and request.GET.sort_order == "desc" %}
+          <div style="float: left; width: 33%;color: #00B894;" class="order-selector" onclick="chooseOrder(this, 'current_price', 'desc')">
+          {% else %}
+          <div style="float: left; width: 33%;color: gray;" class="order-selector" onclick="chooseOrder(this, 'current_price', 'desc')">
+          {% endif %}
+          
+
+            <span>$</span>
+            <i class="fas fa-long-arrow-alt-down"></i>
+          </div>
+
+          
+          {% if request.GET.sort_by == "avg_star" and request.GET.sort_order == "desc" %}
+          <div style="float: left; width: 33%;color: #00B894;" class="order-selector" onclick="chooseOrder(this, 'avg_star', 'desc')">
+          {% else %}
+          <div style="float: left; width: 33%;color: gray;" class="order-selector" onclick="chooseOrder(this, 'avg_star', 'desc')">
+          {% endif %}
+          
+
+            <span>★</span>
+            <i class="fas fa-long-arrow-alt-down"></i>
+          </div>
+        </div>
+
+        <div style="width: 100%;height: 50px;">
+          <h5 class="mb-3" style="float: left;">Filter</h5>
+          <div style="float: right;margin-top: 3px;font-weight: bold;color: #cb3424;" class="filter-div" onclick="clear_filters(this, 'all')">
+            {% if request.GET.brands or request.GET.keywords or request.GET.attrs or request.GET.sattrs or request.GET.tags or request.GET.features %}
+            clear all
+            {% else %}
+            choose all
+            {% endif %}
+          </div>
+        </div>
+        
+        {% if es_filters.aggregations.brand_terms.buckets %}
+        <!-- Brand -->
+        <div class="widget catagory mb-4">
+          <div style="width: 100%;height: 50px;">
+            <h6 class="widget-title mb-3" style="float: left;">Brand</h6>
+            <div style="float: right;margin-top: -2px;font-weight: bold;color: #cb3424;" class="filter-div" onclick="clear_filters(this, 'brands')">
+              {% if request.GET.brands %}
+              clear all
+              {% else %}
+              choose all
+              {% endif %}
+            </div>
+          </div>
+
+
+          <div class="widget-desc">
+            {% for brand in es_filters.aggregations.brand_terms.buckets %}
+
+
+            
+            {% if brand.show %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
+            {% else %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2" style="opacity: 0.5;pointer-events:none;">
+            {% endif %}
+            
+              {% if brand.key in request.GET.brands|split:"," %}
+              <input class="custom-control-input" id="brand_{{ forloop.counter }}" name="brands" type="checkbox" property_key="brands" property_value="{{ brand.key }}" checked>
+              {% else %}
+              <input class="custom-control-input" id="brand_{{ forloop.counter }}" name="brands" type="checkbox" property_key="brands" property_value="{{ brand.key }}">
+              {% endif %}
+              
+              <label class="custom-control-label" for="brand_{{ forloop.counter }}">{{ brand.key }} ({{ brand.doc_count }})</label>
+            </div>
+            {% endfor %} 
+          </div>
+        </div>
+        {% endif %}
+        
+        {% if es_filters.aggregations.keyword_array_terms.buckets %}
+        <!-- Keywords -->
+        <div class="widget catagory mb-4">
+          <div style="width: 100%;height: 50px;">
+            <h6 class="widget-title mb-3" style="float: left;">Keywords</h6>
+            <div style="float: right;margin-top: -2px;font-weight: bold;color: #cb3424;" class="filter-div" onclick="clear_filters(this, 'keywords')">
+              {% if request.GET.keywords %}
+              clear all
+              {% else %}
+              choose all
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="widget-desc">
+            {% for keywords in es_filters.aggregations.keyword_array_terms.buckets %}
+            
+            {% if keywords.show %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
+            {% else %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2" style="opacity: 0.5;pointer-events:none;">
+            {% endif %}
+
+              {% if keywords.key in request.GET.keywords|split:"," %}
+              <input class="custom-control-input" id="keywords_{{ forloop.counter }}" name="keywords" type="checkbox" property_key="keywords" property_value="{{ keywords.key }}" checked>
+              {% else %}
+              <input class="custom-control-input" id="keywords_{{ forloop.counter }}" name="keywords" type="checkbox" property_key="keywords" property_value="{{ keywords.key }}">
+              {% endif %}
+              
+              <label class="custom-control-label" for="keywords_{{ forloop.counter }}">{{ keywords.key }} ({{ keywords.doc_count }})</label>
+            </div>
+            {% endfor %} 
+          </div>
+        </div>
+        {% endif %}
+
+        {% if es_filters.aggregations.attr_array_terms.attr_name_terms.buckets %}
+        {% for attr in es_filters.aggregations.attr_array_terms.attr_name_terms.buckets %}
+        <!-- Attrs -->
+        <div class="widget catagory mb-4">
+
+          <div style="width: 100%;height: 50px;">
+            <h6 class="widget-title mb-3" style="float: left;">{{ attr.key | capfirst }}</h6>
+            <div style="float: right;margin-top: -2px;font-weight: bold;color: #cb3424;" class="filter-div" onclick="clear_filters(this, '{{ attr.key }}')">
+              {% if request.GET.attrs %}
+              clear all
+              {% else %}
+              choose all
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="widget-desc">
+            {% for attr_value in attr.attr_values_terms.buckets %}
+            
+            {% if attr_value.show %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
+            {% else %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2" style="opacity: 0.5;pointer-events:none;">
+            {% endif %}
+
+              {% if attr_value.key in request.GET.attrs|split:"," %}
+              <input class="custom-control-input" id="{{ attr.key }}_{{ forloop.counter }}" name="{{ attr.key }}" type="checkbox" property_key="attrs" property_value="{{ attr_value.key }}" checked>
+              {% else %}
+              <input class="custom-control-input" id="{{ attr.key }}_{{ forloop.counter}}" name="{{ attr.key }}" type="checkbox" property_key="attrs" property_value="{{ attr_value.key }}">
+              {% endif %}
+              <label class="custom-control-label" for="{{ attr.key }}_{{ forloop.counter }}">{{ attr_value.key }} ({{ attr_value.doc_count }})</label>
+            </div>
+            {% endfor %} 
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if es_filters.aggregations.sattr_array_terms.sattr_name_terms.buckets %}
+        {% for sattr in es_filters.aggregations.sattr_array_terms.sattr_name_terms.buckets %}
+        <!-- SAttrs -->
+        <div class="widget catagory mb-4">
+
+          <div style="width: 100%;height: 50px;">
+            <h6 class="widget-title mb-3" style="float: left;">{{ sattr.key | capfirst }}</h6>
+            <div style="float: right;margin-top: -2px;font-weight: bold;color: #cb3424;" class="filter-div" onclick="clear_filters(this, '{{ sattr.key }}')">
+              {% if request.GET.sattrs %}
+              clear all
+              {% else %}
+              choose all
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="widget-desc">
+            {% for sattr_value in sattr.sattr_values_terms.buckets %}
+
+            {% if sattr_value.show %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
+            {% else %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2" style="opacity: 0.5;pointer-events:none;">
+            {% endif %}
+
+              {% if sattr_value.key in request.GET.sattrs|split:"," %}
+              <input class="custom-control-input" id="{{ sattr.key }}_{{ forloop.counter }}" name="{{ sattr.key }}" type="checkbox" property_key="sattrs" property_value="{{ sattr_value.key }}" checked>
+              {% else %}
+              <input class="custom-control-input" id="{{ sattr.key }}_{{ forloop.counter }}" name="{{ sattr.key }}" type="checkbox" property_key="sattrs" property_value="{{ sattr_value.key }}">
+              {% endif %}
+              <label class="custom-control-label" for="{{ sattr.key }}_{{ forloop.counter }}">{{ sattr_value.key }} ({{ sattr_value.doc_count }})</label>
+            </div>
+            {% endfor %} 
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if es_filters.aggregations.tag_array_terms.buckets %}
+        <!-- Tags -->
+        <div class="widget catagory mb-4">
+
+          <div style="width: 100%;height: 50px;">
+            <h6 class="widget-title mb-3" style="float: left;">Tags</h6>
+            <div style="float: right;margin-top: -2px;font-weight: bold;color: #cb3424;" class="filter-div" onclick="clear_filters(this, 'tags')">
+              {% if request.GET.tags %}
+              clear all
+              {% else %}
+              choose all
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="widget-desc">
+            {% for tags in es_filters.aggregations.tag_array_terms.buckets %}
+            
+            {% if tags.show %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
+            {% else %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2" style="opacity: 0.5;pointer-events:none;">
+            {% endif %}
+
+
+              {% if tags.key in request.GET.tags|split:"," %}
+              <input class="custom-control-input" id="tags_{{ forloop.counter }}" name="tags" type="checkbox" property_key="tags" property_value="{{ tags.key }}" checked>
+              {% else %}
+              <input class="custom-control-input" id="tags_{{ forloop.counter }}" name="tags" type="checkbox" property_key="tags" property_value="{{ tags.key }}">
+              {% endif %}
+              <label class="custom-control-label" for="tags_{{ forloop.counter }}">{{ tags.key }} ({{ tags.doc_count }})</label>
+            </div>
+            {% endfor %} 
+          </div>
+        </div>
+        {% endif %}
+
+        {% if es_filters.aggregations.feature_array_terms.feature_name_terms.buckets %}
+        {% for feature in es_filters.aggregations.feature_array_terms.feature_name_terms.buckets %}
+        <!-- Features -->
+        <div class="widget catagory mb-4">
+
+          <div style="width: 100%;height: 50px;">
+            <h6 class="widget-title mb-3" style="float: left;">{{ feature.key | capfirst }}</h6>
+            <div style="float: right;margin-top: -2px;font-weight: bold;color: #cb3424;" class="filter-div" onclick="clear_filters(this, '{{ feature.key }}')">
+              {% if request.GET.features %}
+              clear all
+              {% else %}
+              choose all
+              {% endif %}
+            </div>
+          </div>
+
+          
+          <div class="widget-desc">
+            {% for feature_value in feature.feature_values_terms.buckets %}
+
+            {% if feature_value.show %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
+            {% else %}
+            <div class="custom-control custom-checkbox d-flex align-items-center mb-2" style="opacity: 0.5;pointer-events:none;">
+            {% endif %}
+
+              {% if feature_value.key in request.GET.features|split:"," %}
+              <input class="custom-control-input" id="{{ feature.key }}_{{ forloop.counter }}" name="{{ feature.key }}" type="checkbox" property_key="features" property_value="{{ feature_value.key }}" checked>
+              {% else %}
+              <input class="custom-control-input" id="{{ feature.key }}_{{ forloop.counter }}" name="{{ feature.key }}" type="checkbox" property_key="features" property_value="{{ feature_value.key }}">
+              {% endif %}
+              <label class="custom-control-label" for="{{ feature.key }}_{{ forloop.counter }}">{{ feature_value.key }} ({{ feature_value.doc_count }})</label>
+            </div>
+            {% endfor %} 
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <br/>
+        <br/>
+        
+      </div>
+      <!-- Go Back Button-->
+      <div class="go-home-btn" id="goHomeBtn"><i class="lni-arrow-left"></i></div>
+      <!-- Apply Filter-->
+      <div class="apply-filter-btn"><a class="btn btn-success" href="#" onclick="filter()">Apply Filter</a></div>
+    </div>
+{% endblock %}
+
+{% block content %}
+      {% if request.GET.catalog_id %}
+      <!-- Catagory Single Image-->
+      <div class="catagory-single-img">
+        <img class="w-100" src="{% static 'online-store/img/catalog/' %}{{ catalog.id }}.png" alt="">
+      </div>
+      {% else %}
+      <br/>
+      {% endif %}
+
+      <!-- Top Products-->
+      <div class="top-products-area mt-3">
+        <div class="container">
+          <div class="section-heading d-flex align-items-center justify-content-between">
+            <h6 class="ml-1">
+              {% if request.GET.catalog_id %}
+                Catalog: {{ catalog.name }} ( total: {{ es_products.hits.total.value }} ) 
+              {% else %}
+                Searching: {{ request.GET.search }} ( total: {{ es_products.hits.total.value }} ) 
+              {% endif %}
+            </h6>
+          </div>
+          <div class="row">
+            {% for product in es_products.hits.hits %}
+              {% include 'online-store/segment/product-square-show-seg.html' with product_flag=product_flag scroll_flag=scroll_flag tag_show_flag=tag_show_flag  %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+{% endblock %}
+
+
+{% block extrascripts %}
+<script>
+  if ($.cookie('intro-complete-plp') == undefined){
+    introJs().start().oncomplete(function(targetElement) {
+      $.cookie('intro-complete-plp', true);  
+    }).onexit(function(){
+      $.cookie('intro-complete-plp', true);   
+    });
+  }
+
+  var sort_by = null;
+  var sort_order = null;
+
+  function chooseOrder(thisObj, sort_by_tmp, sort_order_tmp) {
+    var original_color = $(thisObj).css("color")
+    $(".order-selector").each(function(){
+      $(this).css("color", "gray");
+    });
+    if (original_color == "rgb(128, 128, 128)") {
+      $(thisObj).css("color", "#00B894");
+      sort_by = sort_by_tmp;
+      sort_order = sort_order_tmp;
+      
+    } else {
+      $(thisObj).css("color", "rgb(128, 128, 128)");
+      sort_by = null;
+      sort_order = null;
+    }
+  }
+
+  function clear_filters(thisObj, target) {
+    if ($(thisObj).html().trim() == "choose all") {
+      
+      if (target == "all") {
+        $(".custom-control-input").each(function(){
+          if($(this).parent().css("opacity") != 0.5){
+            $(this).prop("checked", true); 
+          }
+        });
+
+
+        $(".filter-div").each(function(){
+          $(this).html("clear all"); 
+        })
+      } else {
+        $(".custom-control-input[name='"+target+"']").each(function(){
+          if($(this).parent().css("opacity") != 0.5){
+            $(this).prop("checked", true); 
+          }
+        });
+        
+        $(thisObj).html("clear all"); 
+      }
+      
+    } else {
+      if (target == "all") {
+        $(".custom-control-input").prop("checked", false);
+        $(".filter-div").each(function(){
+          $(this).html("choose all"); 
+        })
+      } else {
+        $(".custom-control-input[name='"+target+"']").prop("checked", false); 
+        $(thisObj).html("choose all"); 
+      }
+    }
+  }
+
+
+  function filter(){
+    query_terms = "";
+    
+    brands_length = $(".custom-control-input[type=checkbox][property_key=brands]:checked").length;
+    if (brands_length > 0){
+      query_terms += "&brands="
+    } 
+    $(".custom-control-input[type=checkbox][property_key=brands]:checked").each(function(index){
+      query_terms += ($(this).attr("property_value"))
+      if (index < (brands_length - 1)) {
+        query_terms += ","
+      }
+    });
+
+    keywords_length = $(".custom-control-input[type=checkbox][property_key=keywords]:checked").length;
+    if (keywords_length > 0){
+      query_terms += "&keywords="
+    } 
+    $(".custom-control-input[type=checkbox][property_key=keywords]:checked").each(function(index){
+      query_terms += ($(this).attr("property_value"))
+      if (index < (keywords_length - 1)) {
+        query_terms += ","
+      }
+    });
+
+    attrs_length = $(".custom-control-input[type=checkbox][property_key=attrs]:checked").length;
+    if (attrs_length > 0){
+      query_terms += "&attrs="
+    } 
+    $(".custom-control-input[type=checkbox][property_key=attrs]:checked").each(function(index){
+      query_terms += ($(this).attr("property_value"))
+      if (index < (attrs_length - 1)) {
+        query_terms += ","
+      } 
+    });
+
+    sattrs_length = $(".custom-control-input[type=checkbox][property_key=sattrs]:checked").length;
+    if (sattrs_length > 0){
+      query_terms += "&sattrs="
+    }   
+    $(".custom-control-input[type=checkbox][property_key=sattrs]:checked").each(function(index){
+      query_terms += ($(this).attr("property_value"))
+      if (index < (sattrs_length - 1)) {
+        query_terms += ","
+      } 
+    });
+
+    tags_length = $(".custom-control-input[type=checkbox][property_key=tags]:checked").length;
+    if (tags_length > 0){
+      query_terms += "&tags="
+    } 
+    $(".custom-control-input[type=checkbox][property_key=tags]:checked").each(function(index){
+      query_terms += ($(this).attr("property_value"))
+      if (index < (tags_length - 1)) {
+        query_terms += ","
+      }
+    });
+
+    features_length = $(".custom-control-input[type=checkbox][property_key=features]:checked").length;
+    if (features_length > 0){
+      query_terms += "&features="
+    }   
+    $(".custom-control-input[type=checkbox][property_key=features]:checked").each(function(index){
+      query_terms += ($(this).attr("property_value"))
+      if (index < (features_length - 1)) {
+        query_terms += ","
+      } 
+    });
+
+    if (null != sort_by && null != sort_order) {
+      query_terms += ("&sort_by=" + sort_by + "&sort_order=" + sort_order);
+    }
+
+    var current_url = window.location.href;
+    if (current_url.indexOf("&") <= -1) {
+      window.location.href = current_url + query_terms 
+    } else {
+      window.location.href = current_url.substr(0, current_url.indexOf("&")) + query_terms 
+    }
+  };
+
+
+  $(window).scroll(function(){
+    var current_url = window.location.href;
+    var new_url = "store/ajax-product-list" + current_url.substr(current_url.indexOf("?"));
+    page_scroll_detector(new_url, 10, '{{ es_products.hits.total.value }}', ".container > .row", null);
+  });
+
+  
+</script>
+{% endblock %}
