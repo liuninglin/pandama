@@ -15,8 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from apps.commons.views_commons import CommonErrorPageViews
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('', CustomerPageViews.store_customers_home_page, name='store_customers_home_page'),
+    # path('admin/', admin.site.urls),
+    
+    path('', include('apps.commons.urls')),
     path('catalogs/', include('apps.catalogs.urls')),
+    path('products/', include('apps.products.urls')),
+    path('orders/', include('apps.orders.urls')),
+    path('customers/', include('apps.customers.urls')),
+    path('carts/', include('apps.carts.urls')),
 ]
+
+handler404 = CommonErrorPageViews.error_404
+handler500 = CommonErrorPageViews.error_500
+handler403 = CommonErrorPageViews.error_403
+handler400 = CommonErrorPageViews.error_400

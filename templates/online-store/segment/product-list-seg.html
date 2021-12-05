@@ -1,0 +1,5 @@
+{% load product_tag %}
+
+{% for product in es_products.hits.hits %}
+    {% include 'online-store/segment/product-square-show-seg.html' with product_flag=product_flag scroll_flag=scroll_flag tag_show_flag=tag_show_flag %}
+{% endfor %}

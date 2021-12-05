@@ -1,0 +1,48 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+
+{% block header %}
+      <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Logo Wrapper-->
+        <div class="logo-wrapper"><a href="{% url 'store_page' page='home' %}"><img src="{% static 'online-store/img/core-img/logo_with_letter.png' %}" alt=""></a></div>
+        <!-- Search Form-->
+        <div class="top-search-form">
+          <form action="product-list" method="GET">
+            <input class="form-control" type="search" id="product_search_input" name="search" placeholder="Enter your keyword">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+        <!-- Navbar Toggler-->
+        <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler"><span></span><span></span><span></span></div>
+      </div>
+{% endblock %}
+
+{% block content %}
+      <!-- Product Catagories-->
+      <div class="product-catagories-wrapper pt-3">
+        <div class="container">
+          <div class="section-heading">
+            <h6 class="ml-1">Product Catalog</h6>
+          </div>
+          <div class="product-catagory-wrap">
+            <div class="row">
+
+              {% for catalog in catalogs %}
+              <div class="col-4">
+                <div class="card mb-3 catagory-card">
+                  <div class="card-body" style="font-size: 40px;">
+                    <a href="{% url 'store_products_product_list_page' %}?catalog_id={{ catalog.id }}">
+                      {{ catalog.img|safe }}
+                      <span>{{ catalog.name }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+{% endblock %}

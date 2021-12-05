@@ -1,0 +1,77 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+{% block header %}
+<div class="container h-100 d-flex align-items-center justify-content-between">
+    <!-- Back Button-->
+    <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a>
+    </div>
+    <!-- Page Title-->
+    <div class="page-heading">
+        <h6 class="mb-0">My Order History</h6>
+    </div>
+    <!-- Navbar Toggler-->
+    <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler">
+        <span></span><span></span><span></span>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="my-order-wrapper py-3">
+    <div class="single-order-status" id="order">
+        {% include 'online-store/segment/product-square-scroll-show-seg.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extrascripts %}
+<script>
+    $(document).ready(function(){
+        if ($.cookie('intro-complete-order') == undefined){
+            introJs().start().oncomplete(function(targetElement) {
+                $.cookie('intro-complete-order', true);  
+            }).onexit(function(){
+                $.cookie('intro-complete-order', true);   
+            });
+        }
+    });
+
+
+ $(window).scroll(function(){
+    page_scroll_detector("store/ajax-order-history", parseInt('{{ page_size }}'), parseInt('{{ total_size }}'), "#order", function(){
+        var flashSlide = $('.flash-order-history-shows');
+        flashSlide.owlCarousel({
+            items: 2,
+            margin: 10,
+            loop: false,
+            autoplay: false,
+            smartSpeed: 800,
+            autoplayTimeout: 2500,
+            dots: false,
+            nav: false
+        }); 
+    });
+  });
+
+
+
+    var flashSlide = $('.flash-order-history-shows');
+    flashSlide.owlCarousel({
+        items: 2,
+        margin: 10,
+        loop: false,
+        autoplay: false,
+        smartSpeed: 800,
+        autoplayTimeout: 2500,
+        dots: false,
+        nav: false
+    });
+
+
+    function showProductSnapshot(order_item_id) {
+        window.location.href = location.protocol + "//" + location.host + "/store/product-snapshot?order_item_id=" + order_item_id;
+    }
+
+
+</script>
+{% endblock %}

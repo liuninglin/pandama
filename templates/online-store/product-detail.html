@@ -1,0 +1,559 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+{% load sku_get %}
+{% load tz %}
+
+{% block header %}
+    <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Back Button-->
+        <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a></div>
+        <!-- Page Title-->
+        <div class="page-heading">
+            <h6 class="mb-0">Product Details</h6>
+        </div>
+        <!-- Navbar Toggler-->
+        <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler">
+            <span></span><span></span><span></span></div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <input type="hidden" id="product_number_hidden" value="{{ product.product_number }}"/>
+      <!-- Product Slides-->
+      <div class="product-slides owl-carousel">
+        {% for product_img in product.other_img_array %}
+        <div class="single-product-slide">
+            <img src="{{ product_img_prefix }}{{ product_img }}" alt="" onerror="this.src='{% static "online-store/img/core-img/not_found.png" %}'">
+        </div>
+        {% endfor %}
+      </div>
+      <div class="product-description pb-3">
+        <!-- Product Title & Meta Data-->
+        <div class="product-title-meta-data bg-white mb-3 py-3">
+            <div class="container d-flex justify-content-between">
+                <div class="p-title-price">
+                    <h6 class="mb-1">{{ product.name }}</h6>
+                    <p class="sale-price mb-0">${{ product.current_price }}<span>${{ product.original_price }}</span></p>
+                </div>
+                <div class="p-wishlist-share">
+                    <a class="wishlist-btn" onclick="addWishListDirectly(this, '{{ product.product_number }}')">
+                        <i class="far fa-heart text-danger"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- Ratings-->
+            <div class="product-ratings">
+                <div class="container d-flex align-items-center justify-content-between">
+                    <div class="ratings">
+                        {% if product.avg_star <= 5 and product.avg_star >= 4.5 %}
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        {% elif product.avg_star < 4.5 and product.avg_star >= 3.5 %}
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star"></i>
+                        {% elif product.avg_star < 3.5 and product.avg_star >= 2.5 %}
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star"></i>
+                        <i class="lni-star"></i>
+                        {% elif product.avg_star < 2.5 and product.avg_star >= 1.5 %}
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star"></i>
+                        <i class="lni-star"></i>
+                        <i class="lni-star"></i>
+                        {% elif product.avg_star < 1.5 and product.avg_star >= 0 %}
+                        <i class="lni-star-filled"></i>
+                        <i class="lni-star"></i>
+                        <i class="lni-star"></i>
+                        <i class="lni-star"></i>
+                        <i class="lni-star"></i>
+                        {% endif %}
+                    </div>
+                    <div class="total-result-of-ratings">
+                        <span>{{ product.avg_star }}</span>
+                        <span>
+                            {% if product.avg_star <= 5 and product.avg_star >= 4.5 %}
+                            Very Good
+                            {% elif product.avg_star < 4.5 and product.avg_star >= 3.5 %}
+                            Good
+                            {% elif product.avg_star < 3.5 and product.avg_star >= 2.5 %}
+                            Normal
+                            {% elif product.avg_star < 2.5 and product.avg_star >= 1.5 %}
+                            Bad
+                            {% elif product.avg_star < 1.5 and product.avg_star >= 0 %}
+                            Very Bad
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for sku in product.sku_array %}
+            <input class="sku_number" type="hidden" sku="{{ sku.sku_number }}"
+            {% for attr in sku.attr_array %}
+                {{ attr.name }} = "{{ attr.value }}" 
+            {% endfor %}
+            />
+        {% endfor %}
+
+        {% if product.attr_array_pdp|length == 1 and product.attr_array_pdp.0.attr_value_array.0.attr_name or product.attr_array_pdp|length > 1 %}
+        <!-- Selection Panel-->
+        <div class="selection-panel bg-white mb-2 py-2">
+            <div class="container d-flex align-items-center justify-content-between row">
+                
+                {% for attr_show in product.attr_array_pdp %}
+
+                    {% if not request.GET.sku %}
+                    <input type="hidden" class="attr-choosed" attr_name="{{ attr_show.attr_name }}" attr_value=""/>
+                    {% endif %}
+                    
+                    {% if forloop.counter|divisibleby:2 == 0 %}
+                    <div class="choose-size-wrapper text-left col-6">
+                    {% else %}
+                    <div class="choose-size-wrapper text-right col-6">
+                    {% endif %}
+            
+                     
+
+                        {% if attr_show.attr_name == "color" %}
+                            <p class="mb-0">Color</p>
+                            <div class="choose-color-radio d-flex align-items-center" {% if forloop.counter|divisibleby:2 == 1 %}style="float:right"{% endif %}>
+                                
+                                {% for attr_value in attr_show.attr_value_array %} 
+                                <div class="custom-control custom-radio mr-1" onclick="chooseColor(this, '{{ attr_value.attr_value }}')" >
+                                    {% if request.GET.sku and attr_value.attr_value in product.sku_array|sku_get:request.GET.sku %}
+                                    <input class="custom-control-input color-chooser attr_item_color" type="radio" id="attr_item_color_{{ attr_value.attr_value }}" attr_name="{{ attr_show.attr_name }}" attr_value="{{ attr_value.attr_value }}" skus="{{ attr_value.sku_number_array|join:',' }}"  checked>
+                                    <input type="hidden" class="attr-choosed" attr_name="{{ attr_show.attr_name }}" attr_value="{{ attr_value.attr_value }}"/>
+                                    {% else %}
+                                    <input class="custom-control-input color-chooser attr_item_color" type="radio" id="attr_item_color_{{ attr_value.attr_value }}" attr_name="{{ attr_show.attr_name }}" attr_value="{{ attr_value.attr_value }}" skus="{{ attr_value.sku_number_array|join:',' }}" >
+                                    {% endif %}
+                                    
+                                    <label class="custom-control-label {{ attr_value.attr_value }}" for="customRadio{{ attr_value.attr_value }}"></label>
+                                </div>
+                                {% endfor %}
+                                
+                                
+                            </div>
+                        {% else %}
+                            <p class="mb-0" style="margin-left: 0.5rem;">{{ attr_show.attr_name | capfirst }}</p>
+
+                            {% if forloop.counter|divisibleby:2 == 0 %}
+                            <ul class="mb-0 choose-size-radio d-flex align-items-center">
+                            {% else %}
+                            <ul class="mb-0 choose-size-radio d-flex align-items-center" style="float: right;">
+                            {% endif %}
+                        
+
+                                {% for attr_value in attr_show.attr_value_array %}
+                               
+                                {% if request.GET.sku and attr_value.attr_value in product.sku_array|sku_get:request.GET.sku %}
+                                <li class="attr_item active" attr_name="{{ attr_show.attr_name }}" attr_value="{{ attr_value.attr_value }}" skus="{{ attr_value.sku_number_array|join:',' }}">
+                                    <input type="hidden" class="attr-choosed" attr_name="{{ attr_show.attr_name }}" attr_value="{{ attr_value.attr_value }}"/>
+                                {% else %}
+                                <li class="attr_item" attr_name="{{ attr_show.attr_name }}" attr_value="{{ attr_value.attr_value }}" skus="{{ attr_value.sku_number_array|join:',' }}">
+                                {% endif %}
+                                
+                                <a onclick="chooseAttr(this, '{{ attr_show.attr_name }}', '{{ attr_value.attr_value }}')">{{ attr_value.attr_value }}</a></li>
+                                
+                                
+                                {% endfor %} 
+                            </ul>
+
+                        {% endif %}
+                    </div>
+                    
+                {% endfor %}
+
+                
+            </div>
+        </div>
+        {% endif %}
+
+
+        <!-- Add To Cart-->
+        <div class="cart-form-wrapper bg-white mb-3 py-3">
+            <div class="container">
+                <form class="cart-form" id="single_checkout_form" action="{% url 'store_page' page='single_checkout' %}" method="POST">
+                    {% csrf_token %} 
+                    <a onclick="changeQty('minus')"><i class="fas fa-minus" style="margin-top: 10px;margin-right: 10px;"></i></a>               
+                    <input type="hidden" name="sku" valu="" id="sku" />
+                    <input class="form-control" type="text" id="qty" step="1" min="1" max="12" name="quantity" value="1"/>
+
+                    <a onclick="changeQty('plus')"><i class="fas fa-plus" style="margin-top: 10px;margin-left: 0px;margin-right: 10px;"></i></a>
+
+                    <button class="btn btn-danger mr-2" type="button" onclick="buyNow('', '{{ product.product_number }}')">Buy Now</button>
+                    <button class="btn btn-warning" type="button" onclick="addCart()">Add to cart</button>
+                </form>
+            </div>
+        </div>
+        <!-- Product Specification-->
+        <div class="p-specification bg-white mb-3 py-3">
+            <div class="container">
+                <h6>Specifications</h6>
+                <p>{{ product.description|safe }}</p>
+            </div>
+        </div>
+
+        
+
+        <!-- Rating & Review Wrapper-->
+        <div class="rating-and-review-wrapper bg-white py-3 mb-3">
+            <div class="container">
+                <h6>Ratings &amp; Reviews</h6>
+                <div class="rating-review-content" style="max-height: 200px;overflow-y: scroll;">
+                    <ul>
+                        {% for review in product.review_array %}
+                        <li class="single-user-review d-flex">
+                            <div class="user-thumbnail"><img src="{% static review.customer.profile_img %}" alt="" onerror="this.src='{% static "online-store/img/core-img/logo.png" %}'"></div>
+                            <div class="rating-comment">
+                                <div class="rating">
+                                    {% if review.star == 1 %}
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star"></i>
+                                    <i class="lni-star"></i>
+                                    <i class="lni-star"></i>
+                                    <i class="lni-star"></i>
+                                    {% endif %}
+                                    {% if review.star == 2 %}
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star"></i>
+                                    <i class="lni-star"></i>
+                                    <i class="lni-star"></i>
+                                    {% endif %}
+                                    {% if review.star == 3 %}
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star"></i>
+                                    <i class="lni-star"></i>
+                                    {% endif %}
+                                    {% if review.star == 4 %}
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star"></i>
+                                    {% endif %}
+                                    {% if review.star == 5 %}
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    <i class="lni-star-filled"></i>
+                                    {% endif %}
+                                </div>
+                                <p class="comment mb-0">{{ review.content }}</p><span
+                                    class="name-date">
+                                    {{ review.customer.first_name }} {{ review.customer.last_name }}
+                                    {% with dateime=review.created_time|timezone:'US/Eastern' %}
+                                    {{dateime|date:'Y-m-d H:i'}}
+                                    {% endwith %}
+                                </span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        
+                        
+                        
+                    </ul>
+                </div>
+
+                {% if product.review_array|length >= 5 %}
+                <div class="btn btn-success review-load" style="width: 100%;text-align: center;margin-top: 20px;" onclick="loadMoreReviews('{{ product.product_number }}')">load more</div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Ratings Submit Form-->
+        <div class="ratings-submit-form bg-white py-3">
+            <div class="container">
+                <h6>Submit A Review</h6>
+                
+                    <div class="form-group">
+                        <div class="stars">
+                            <input class="star-1" type="radio" name="star" id="star1">
+                            <label class="star-1" for="star1" onclick="chooseStar(1)"></label>
+                            <input class="star-2" type="radio" name="star" id="star2">
+                            <label class="star-2" for="star2" onclick="chooseStar(2)"></label>
+                            <input class="star-3" type="radio" name="star" id="star3">
+                            <label class="star-3" for="star3" onclick="chooseStar(3)"></label>
+                            <input class="star-4" type="radio" name="star" id="star4">
+                            <label class="star-4" for="star4" onclick="chooseStar(4)"></label>
+                            <input class="star-5" type="radio" name="star" id="star5">
+                            <label class="star-5" for="star5" onclick="chooseStar(5)"></label><span></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" id="comments" name="comment" cols="30" rows="10"
+                                  data-max-length="200"></textarea>
+                    </div>
+                    <button class="btn btn-sm btn-primary" type="submit" onclick="addReview()">Save Review</button>
+                
+            </div>
+        </div>
+
+        <br/>
+        {% if recommendation_product_array|length > 0 %}
+        <div class="flash-sale-wrapper pb-3">
+            <div class="container">
+              <div class="section-heading d-flex align-items-center justify-content-between">
+                <h6 class="ml-1">Recommended Products</h6>
+              </div>
+              <!-- Flash Sale Slide-->
+              <div class="flash-recommended-products-slide owl-carousel">
+                {% for product in recommendation_product_array.hits.hits %}
+                 {% include 'online-store/segment/product-square-show-seg.html' with product_flag=product_flag scroll_flag=scroll_flag tag_show_flag=tag_show_flag %} 
+                {% endfor %}
+              </div>
+            </div>
+        </div>
+        {% endif %}
+        
+
+    </div>
+{% endblock %}
+
+
+{% block extrascripts %}
+<script>
+    
+    function buyNow(url, product_number){
+        sku = getSku();
+        if (null == sku) {
+            alertShow("warn", "Please choose other attrs!");
+        } else if (-1 == sku){
+            alertShow("warn", "Please choose attrs!");
+        } else {
+            $("#sku").val(sku);
+            $("#single_checkout_form").submit();
+        } 
+    }
+
+    var recommendation_product_slides = $('.flash-recommended-products-slide');
+    recommendation_product_slides.owlCarousel({
+        items: 2,
+        margin: 10,
+        loop: false,
+        smartSpeed: 800,
+        autoplay: true,
+        autoplayTimeout: 2500,
+        stopOnHover: true,
+        dots: false,
+        nav: false
+    })
+
+
+    var page_review = 2;
+    function loadMoreReviews(product_number){
+        if ("This is the end!" == $(".review-load").html()) {
+            return;
+        }
+  
+        params={"product_number": product_number, "page": page_review};
+        commonAjax("store/ajax-product-review-list", "GET", params, "html", function(html){
+            if (html == "") {
+                $(".review-load").html("This is the end!");
+                $(".review-load").removeClass("btn-success");
+                $(".review-load").addClass("btn-danger");
+            }
+            else{
+                page_review++;
+                $(".rating-review-content > ul").append(html);
+            }
+        }, function(){
+            alertShow("error", "Occurred error!");
+        });
+    }
+
+    function changeQty(type) {
+        if (type == "minus") {
+            if (1 < parseInt($("#qty").val())) {
+                $("#qty").val(parseInt($("#qty").val()) - 1);
+            }
+        } else {
+            $("#qty").val(parseInt($("#qty").val()) + 1); 
+        }
+    }
+
+    function chooseColor(thisObj, color) {
+        if ($(thisObj).children("label").css("opacity") == 0.5) {
+            return;
+        }
+
+        $(".color-chooser").each(function(){
+            $(this).prop('checked', false);
+            $(this).next().css('opacity', 1);
+        });
+        $(".attr_item").each(function(){
+            $(this).css("opacity", 1); 
+        });      
+
+
+        $("#attr_item_color_" + color).prop('checked', true);
+        $("input[attr_name=color]").attr("attr_value", color);
+        
+        current_skus = $("#attr_item_color_" + color).attr("skus");
+        $(".attr_item").each(function(){
+            
+            comparable_skus = $(this).attr("skus");
+            
+            var flag = false;
+            for (var comparable_sku of comparable_skus.split(",")) {
+                
+                if (current_skus.split(",").includes(comparable_sku)) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                $(this).removeClass("active")
+                $(this).css("opacity", 0.5);
+            }
+        });
+        
+    } 
+
+    function chooseAttr(thisObj, attrName, attrValue) {
+        current_skus = $(thisObj).parent().attr("skus");
+        attr_name = $(thisObj).parent().attr("attr_name"); 
+
+        if ($(thisObj).parent().css("opacity") == 0.5) {
+            return;
+        }
+
+        $(".attr_item").each(function(){
+            $(this).css("opacity", 1);
+        })
+        $(".attr_item_color").each(function(){
+            $(this).next().css("opacity", 1);
+        })
+        
+
+        $(thisObj).parent().parent().children("li").removeClass("active");
+        $(thisObj).parent().addClass("active");
+
+        $("input[attr_name="+attrName+"]").attr("attr_value", attrValue);
+
+        $(".attr_item").each(function(){
+            if ($(this).attr("attr_name") == attr_name) {
+                return;
+            }
+            
+            comparable_skus = $(this).attr("skus");
+            
+            var flag = false;
+            for (var comparable_sku of comparable_skus.split(",")) {
+                
+                if (current_skus.split(",").includes(comparable_sku)) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                $(this).removeClass("active")
+                $(this).css("opacity", 0.5);
+            }
+        });
+        $(".attr_item_color").each(function(){
+            comparable_skus = $(this).attr("skus");
+            
+            var flag = false;
+            for (var comparable_sku of comparable_skus.split(",")) {
+                
+                if (current_skus.split(",").includes(comparable_sku)) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                $(this).prop('checked', false);
+                $(this).next().css("opacity", 0.5);
+            }
+        })
+    }
+
+    function addCart() {
+        sku = getSku();
+        if (null == sku) {
+            alertShow("warn", "Please choose other attrs!");
+        } else if (-1 == sku){
+            // must choose attr first!
+        } else {
+            var qty = parseInt($("#qty").val());
+            params={"sku_number": sku, "quantity": qty};
+            commonAjax_alert("store/cart/ajax-add", "POST", params, "json", "Added to cart successfully!");
+        }
+    }
+
+    function getSku() {
+        if ($(".selection-panel").length <= 0) {
+            if ($(".sku_number").length == 1) {
+                return $(".sku_number").eq(0).attr("sku");
+            } 
+
+            return null;
+        }
+        else {
+            flagForAddCart = true;
+            $(".attr-choosed").each(function(){
+                if($(this).attr("attr_value") == "") {
+                    flagForAddCart = false;
+                }
+            });
+
+            if (!flagForAddCart) {
+                alertShow("warn", "Please choose attr first!");
+                return -1;
+            }
+
+            var chooser = "";
+            $("input[class=attr-choosed]").each(function(){
+                chooser += ("[" + $(this).attr("attr_name") + "='" + $(this).attr("attr_value") + "']");
+            });
+
+            sku = $("input" + chooser).attr("sku");
+            if (sku != undefined) {
+                return sku
+            }
+
+            return null;
+        }
+
+
+        
+    }
+
+    var choosedStar = 0;
+
+    function chooseStar(star) {
+        choosedStar = star; 
+    }
+
+    function addReview() {
+        if (choosedStar == 0) {
+            alertShow("warn", "Please choose star!");
+            return;
+        }
+
+        if (!$("#comments").val().trim()) {
+            alertShow("warn", "Please type into comment!");
+            return;
+        }
+       
+        params={"product_number": $("#product_number_hidden").val(), "review_content": $("#comments").val().trim(), "review_rating": choosedStar};
+        commonAjax("store/ajax-product-add-review", "POST", params, "html", function(html){
+            $(".rating-review-content > ul").prepend(html);
+            choosedStar = 0;
+            $("#comments").val(""); 
+            $(".stars > input").each(function(){
+                $(this).prop('checked', false);
+            });
+        }, null);
+    }
+</script>
+{% endblock %}

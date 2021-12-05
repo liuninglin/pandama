@@ -37,10 +37,7 @@
     })
 
     // 3.0 Size Selection
-    $(".choose-size-radio li").on("click", function () {
-        $(".choose-size-radio li").removeClass("active");
-        $(this).addClass("active");
-    });
+    
 
     // 4.0 Add To Cart Notify
     $(".add2cart-notify").on("click", function () {
@@ -88,22 +85,7 @@
             });
         });
     }
-
-    // :: 6.0 Flash Sale Slides
-    if ($.fn.owlCarousel) {
-        var flashSlide = $('.flash-sale-slide');
-        flashSlide.owlCarousel({
-            items: 3,
-            margin: 10,
-            loop: true,
-            autoplay: true,
-            smartSpeed: 800,
-            autoplayTimeout: 5000,
-            dots: true,
-            nav: false
-        })
-    }
-
+    
     // :: 7.0 Products Slides
     if ($.fn.owlCarousel) {
         var productslides = $('.product-slides');
@@ -132,12 +114,12 @@
     }
 
     // :: 10.0 Counter Up
-    if ($.fn.counterUp) {
-        $('.counter').counterUp({
-            delay: 150,
-            time: 3000
-        });
-    }
+    // if ($.fn.counterUp) {
+    //     $('.counter').counterUp({
+    //         delay: 150,
+    //         time: 3000
+    //     });
+    // }
 
     // :: 11.0 Prevent Default 'a' Click
     $('a[href="#"]').on('click', function ($) {

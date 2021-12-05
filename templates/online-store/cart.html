@@ -1,32 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-  
-<!-- Mirrored from demo.designing-world.com/suha-v1.1.0/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Jan 2020 15:57:15 GMT -->
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags-->
-    <!-- Title-->
-    <title>Suha - Multipurpose Ecommerce Mobile Template</title>
-    <!-- Favicon-->
-    <link rel="icon" href="img/core-img/favicon.ico">
-    <!-- Stylesheet-->
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <!-- Preloader-->
-    <div class="preloader" id="preloader">
-      <div class="spinner-grow text-secondary" role="status">
-        <div class="sr-only">Loading...</div>
-      </div>
-    </div>
-    <!-- Header Area-->
-    <div class="header-area" id="headerArea">
+{% extends "online-store/common/base.html" %}
+{% load static %}
+{% block header %}
       <div class="container h-100 d-flex align-items-center justify-content-between">
         <!-- Back Button-->
-        <div class="back-button"><a href="shop-grid.html"><i class="lni-arrow-left"></i>Back</a></div>
+        <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a></div>
         <!-- Page Title-->
         <div class="page-heading">
           <h6 class="mb-0">My Cart</h6>
@@ -34,53 +11,41 @@
         <!-- Navbar Toggler-->
         <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler"><span></span><span></span><span></span></div>
       </div>
-    </div>
-    <!-- Sidenav Black Overlay-->
-    <div class="sidenav-black-overlay"></div>
-    <!-- Side Nav Wrapper-->
-    <div class="suha-sidenav-wrapper" id="sidenavWrapper">
-      <!-- Sidenav Profile-->
-      <div class="sidenav-profile">
-        <div class="user-profile"><img src="img/bg-img/9.jpg" alt=""></div>
-        <div class="user-info">
-          <h6 class="user-name mb-0">Suha Jannat</h6>
-          <p class="available-balance">Balance <span>$<span class="counter">379.23</span></span></p>
-        </div>
-      </div>
-      <!-- Sidenav Nav-->
-      <ul class="sidenav-nav">
-        <li><a href="profile.html"><i class="lni-user"></i>My Profile</a></li>
-        <li><a href="notifications.html"><i class="lni-alarm lni-tada-effect"></i>Notifications<span class="ml-3 badge badge-warning">3</span></a></li>
-        <li><a href="pages.html"><i class="lni-empty-file"></i>All Pages</a></li>
-        <li><a href="wishlist-grid.html"><i class="lni-heart-filled"></i>My Wishlist</a></li>
-        <li><a href="settings.html"><i class="lni-cog"></i>Settings</a></li>
-        <li><a href="intro.html"><i class="lni-power-switch"></i>Sign Out</a></li>
-      </ul>
-      <!-- Go Back Button-->
-      <div class="go-home-btn" id="goHomeBtn"><i class="lni-arrow-left"></i></div>
-    </div>
-    <div class="page-content-wrapper">
-      <div class="container">
+{% endblock %}
+
+{% block content %}
         <!-- Cart Wrapper-->
         <div class="cart-wrapper-area py-3">
+          
+          {% if cart %}
           <div class="cart-table card mb-3">
             <div class="table-responsive card-body">
               <table class="table mb-0">
                 <tbody>
-                  <tr>
-                    <th scope="row"><a class="remove-product" href="#"><i class="lni-close"></i></a></th>
-                    <td><img src="img/product/5.jpg" alt=""></td>
-                    <td><a href="single-product.html">Ciramic Pot Set<span>$12.10 × 1</span></a></td>
+                  {% for sku in cart %}
+                  <tr id="cart_sku_row_{{ sku.sku_number }}" class="cart_sku_row">
+                    <th scope="row"><a class="remove-product" onclick="removeCartSku('{{ sku.sku_number }}')"><i class="lni-close"></i></a></th>
+                    <td><img src="{{ product_img_prefix }}{{ sku.main_img }}" alt=""></td>
+                    <td><a href="{% url 'store_products_product_detail_page' %}?product_number={{ sku.product_number }}&sku={{ sku.sku_number }}" style="
+                      text-overflow: ellipsis;
+                      overflow: hidden;
+                      width: 30vw;
+                      white-space: nowrap;
+                      display: inline-block;
+                  ">{{ sku.name }}<span id="unit_price_id_{{ sku.sku_number }}">{{ sku.current_price }}</span></a></td>
                     <td>
                       <div class="quantity">
-                        <input class="qty-text" type="text" value="1">
+                        <a onclick="updateCartQty('minus', '{{ sku.sku_number }}')" style="font-size: 11px; margin-left: -20px; margin-right: 5px;"><i class="fas fa-minus"></i></a>
+                        <input id="qty_input_id_{{ sku.sku_number }}" class="qty-text" type="text" value="{{ sku.qty }}" disabled>
+                        <a onclick="updateCartQty('add', '{{ sku.sku_number }}')" style="font-size: 11px; margin-left: 5px;"><i class="fas fa-plus"></i></a>
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  {% endfor %}
+                  <!-- <tr>
                     <th scope="row"><a class="remove-product" href="#"><i class="lni-close"></i></a></th>
-                    <td><img src="img/product/6.jpg" alt=""></td>
-                    <td><a href="single-product.html">Bluetooth Speaker<span>$9.87 × 2</span></a></td>
+                    <td><img src="{% static 'online-store/img/product/6.jpg' %}" alt=""></td>
+                    <td><a href="{% url 'store_page' page='single-product' %}">Bluetooth Speaker<span>$9.87 × 2</span></a></td>
                     <td>
                       <div class="quantity">
                         <input class="qty-text" type="text" value="2">
@@ -89,70 +54,140 @@
                   </tr>
                   <tr>
                     <th scope="row"><a class="remove-product" href="#"><i class="lni-close"></i></a></th>
-                    <td><img src="img/product/7.jpg" alt=""></td>
-                    <td><a href="single-product.html">Modern Gray Tops<span>$7 × 1</span></a></td>
+                    <td><img src="{% static 'online-store/img/product/7.jpg' %}" alt=""></td>
+                    <td><a href="{% url 'store_page' page='single-product' %}">Modern Gray Tops<span>$7 × 1</span></a></td>
                     <td>
                       <div class="quantity">
                         <input class="qty-text" type="text" value="1">
                       </div>
                     </td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </table>
             </div>
-          </div>
-          <!-- Coupon Area-->
-          <div class="card coupon-card mb-3">
-            <div class="card-body">
-              <div class="apply-coupon">
-                <h6 class="mb-0">Have a coupon?</h6>
-                <p class="mb-2">Enter your coupon code here &amp; get awesome discounts!</p>
-                <div class="coupon-form">
-                  <form action="#">
-                    <input class="form-control" type="text" placeholder="SUHA30">
-                    <button class="btn btn-primary" type="submit">Apply</button>
-                  </form>
-                </div>
-              </div>
+          </div> 
+          {% else %}
+          
+          <div class="card mb-3 catagory-card">
+           
+            <img src="{% static 'online-store/img/core-img/empty_cart.svg' %}" alt="Empty Cart" style="max-height: 150px; margin-top: 50px; margin-bottom: 50px">
+         
+            <div>
+              Not sure where to start? Check out our 
+              <a href="{% url 'store_products_catalog_page' %}">
+                Product Catalog
+              </a>
+              <br/><br/>
             </div>
           </div>
-          <!-- Cart Amount Area-->
+          {% endif %}
+
           <div class="card cart-amount-area">
             <div class="card-body d-flex align-items-center justify-content-between">
-              <h5 class="total-price mb-0">$<span class="counter">38.84</span></h5><a class="btn btn-warning" href="checkout.html">Checkout Now</a>
+              <h5 class="total-price mb-0">$<span id="total_price" class="counter">{{ total_price|stringformat:".2f" }}</span></h5>
+              {% if cart %}
+              <a id="checkout_btn" class="btn btn-warning" href="{% url 'store_page' page='checkout' %}">Checkout Now</a>
+              {% else %}
+              <a id="checkout_btn" class="btn" style="color:white; background-color: gray" href="#" disabled>Checkout Now</a>
+              {% endif %}
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- Footer Nav-->
-    <div class="footer-nav-area" id="footerNav">
-      <div class="suha-footer-nav h-100">
-        <ul class="h-100 d-flex align-items-center justify-content-between">
-          <li class="active"><a href="home.html"><img src="img/core-img/home.png" alt="Home">Home</a></li>
-          <li><a href="message.html"><img src="img/core-img/chat.png" alt="Message">Support</a></li>
-          <li><a href="cart.html"><img src="img/core-img/cart.png" alt="Cart">Cart</a></li>
-          <li><a href="pages.html"><img src="img/core-img/heart.png" alt="Pages">Pages</a></li>
-          <li><a href="settings.html"><img src="img/core-img/setting.png" alt="Settings">Settings</a></li>
-        </ul>
-      </div>
-    </div>
-    <!-- All JavaScript Files-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/waypoints.min.js"></script>
-    <script src="js/jquery.easing.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/jquery.animatedheadline.min.js"></script>
-    <script src="js/jquery.counterup.min.js"></script>
-    <script src="js/wow.min.js"></script>
-    <script src="js/jarallax.min.js"></script>
-    <script src="js/jarallax-video.min.js"></script>
-    <script src="js/default/jquery.passwordstrength.js"></script>
-    <script src="js/default/dark-mode-switch.js"></script>
-    <script src="js/default/active.js"></script>
-  </body>
+{% endblock %}
 
-<!-- Mirrored from demo.designing-world.com/suha-v1.1.0/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Jan 2020 15:57:15 GMT -->
-</html>
+{% block extrascripts %}
+<script>
+function updateCartQty(add, sku) {
+  var curr_qty = parseInt($("#qty_input_id_" + sku).val());
+
+  var latest_qty = 0;
+
+  var unit_price = parseFloat($("#unit_price_id_" + sku).text());
+  var total_price = parseFloat($("#total_price").text());
+  var displayed_total_price = total_price;
+
+
+  if (add == "add") {
+    latest_qty = curr_qty + 1;
+  } else if (add == "minus") {
+    latest_qty = curr_qty - 1;
+  } else {
+    return;
+  }
+
+  if (latest_qty == 0) {
+    $("#cart_sku_row_" + sku).remove();
+    changeBtn();
+  } else if (latest_qty < 0) {
+    alertShow("warn", "Minimum quantity is 0");
+    latest_qty = 0;
+  } else if (latest_qty > 1000) {
+    alertShow("warn", "Maximum quantity is 1000");
+    latest_qty = 1000;
+  }
+
+  // Update the cart data using ajax
+  $.ajax({
+      type: "POST",
+      url: "/store/cart/ajax-update",
+      data: {"sku_number": sku, 
+             "latest_qty": latest_qty, 
+             "csrfmiddlewaretoken": getCSRFToken()},
+      dataType: "json",
+      error: function(json) {
+        alertShow("error", "Failed to add to cart");
+        return;
+      }
+  });
+
+  // Display the updated data on the page
+  displayed_total_price = displayed_total_price + unit_price * (latest_qty - curr_qty);
+  setCartPrice(displayed_total_price);
+  $("#qty_input_id_" + sku).val(latest_qty);
+
+}
+
+function removeCartSku(sku) {
+  var curr_qty = parseInt($("#qty_input_id_" + sku).val());
+  var unit_price = parseFloat($("#unit_price_id_" + sku).text());
+  var total_price = parseFloat($("#total_price").text());
+
+  displayed_total_price = total_price - curr_qty * unit_price;
+  setCartPrice(displayed_total_price);
+
+
+  // Update the cart data using ajax
+  $.ajax({
+      type: "POST",
+      url: "/store/cart/ajax-update",
+      data: {"sku_number": sku, 
+             "latest_qty": 0, 
+             "csrfmiddlewaretoken": getCSRFToken()},
+      dataType: "json",
+      error: function(json) {
+        alertShow("error", "Failed to add to cart");
+        return;
+      }
+  });
+
+  $("#cart_sku_row_" + sku).remove();
+  changeBtn();
+}
+
+function setCartPrice(price) {
+  $("#total_price").text(price.toFixed(2));
+}
+
+function changeBtn() {
+  skus = $(".cart_sku_row");
+  if (skus.size() == 0) {
+    if ($("#checkout_btn").attr("href")) {
+      $("#checkout_btn").removeAttr("href");
+      $("#checkout_btn").removeClass("btn-warning");
+      $("#checkout_btn").text("Add Something");
+    }
+  }
+}
+
+</script>
+{% endblock %}
