@@ -141,3 +141,4 @@ data/
 tmp.png
 tls-gen/
 cert_rabbitmq/
+.env.*
