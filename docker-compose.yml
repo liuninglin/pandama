@@ -7,12 +7,12 @@ services:
       - pandama
 
   redis:
-    image: redis:5.0.5
+    image: redis:6.2
     networks:
       - pandama
 
   mongodb:
-    image: mongo
+    image: mongo:5.0.5
     networks:
       - pandama
 
@@ -27,7 +27,7 @@ services:
       - pandama
 
   rabbitmq:
-    image: rabbitmq:management-alpine
+    image: rabbitmq:3-management-alpine
     networks:
       - pandama
 
