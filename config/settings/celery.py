@@ -1,14 +1,16 @@
 import django
 import os
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
 django.setup()
 
-
+from celery.signals import worker_ready
 from celery import Celery
 from celery.schedules import crontab
+from apps.products.services_spider import SpiderProductAPI
+from apps.products.services_mongo import MongoProcessor
 from apps.products.services_es import ESProcessor
 from apps.products.services_neo4j import Neo4jProcessor
+from apps.commons.tools import CommonTools
 from config.settings.config_common import LOGTAIL_SOURCE_TOKEN
 from logtail import LogtailHandler
 import logging
@@ -34,6 +36,17 @@ app.conf.beat_schedule = {
     }
 }
 app.conf.timezone = 'US/Eastern'
+
+
+@worker_ready.connect
+def at_start(sender, **kwargs):
+    """Run tasks at startup"""
+    CommonTools.postgres_init()
+    CommonTools.redis_init()
+    ESProcessor.create_mapping()
+    ESProcessor.delete_all_index()
+    MongoProcessor.delete_all_products()
+    SpiderProductAPI.async_spider.delay()
 
 @app.task
 def task_es_add_index():

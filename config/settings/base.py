@@ -17,7 +17,6 @@ from config.settings.config_redis import *
 
 root = environ.Path(__file__) - 3
 env = environ.Env()
-environ.Env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 

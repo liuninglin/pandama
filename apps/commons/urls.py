@@ -49,14 +49,13 @@ urlpatterns = [
     path('store/single_pay', OrderPageViews.store_orders_single_pay_page, name='store_orders_single_pay_page'),
 
     # Manual Operation
-    # path('operation/spider_execute', ManualOperationPageView.spider_execute),
-    # path('operation/es_create_mapping', ManualOperationPageView.es_create_mapping),
-    # path("operation/es_add_index", ManualOperationPageView.es_add_index),
-    # path("operation/es_delete_all_index", ManualOperationPageView.es_delete_all_index), 
-    # path("operation/mongo_delete_all_data", ManualOperationPageView.mongo_delete_all_data),
-    # path("operation/neo4j_sync_orders", ManualOperationPageView.neo4j_sync_orders),
-    # path("operation/clear_all_sessions", ManualOperationPageView.clear_all_sessions),
-    
+    path('operation/spider_execute', ManualOperationPageView.spider_execute),
+    path('operation/es_create_mapping', ManualOperationPageView.es_create_mapping),
+    path("operation/es_add_index", ManualOperationPageView.es_add_index),
+    path("operation/es_delete_all_index", ManualOperationPageView.es_delete_all_index), 
+    path("operation/mongo_delete_all_data", ManualOperationPageView.mongo_delete_all_data),
+    path("operation/neo4j_sync_orders", ManualOperationPageView.neo4j_sync_orders),
+    path("operation/clear_all_sessions", ManualOperationPageView.clear_all_sessions),
     
     path('store/<str:page>', CommonPageViews.store_page, name='store_page'),
 ]

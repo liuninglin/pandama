@@ -1,0 +1,98 @@
+version: "3.1"
+
+services:
+  postgres:
+    restart: always
+    env_file: .env.compose.dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./config/initialization/sql_catalogs.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    restart: always
+    env_file: .env.compose.dev
+    command: redis-server --requirepass pandama
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+
+  mongodb:
+    restart: always
+    env_file: .env.compose.dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo:/data/db
+
+  neo4j:
+    restart: always
+    env_file: .env.compose.dev
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./data/neo4j:/data
+
+  elasticsearch:
+    restart: always
+    env_file: .env.compose.dev
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+
+  rabbitmq:
+    restart: always
+    env_file: .env.compose.dev
+    ports:
+      - "15672:15672"
+      - "15671:15671"
+      - "5672:5672"
+      - "5671:5671"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+      - ./cert_rabbitmq:/cert_rabbitmq
+
+  celery_worker:
+    build: .
+    restart: always
+    env_file: .env.compose.dev
+    command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
+      sh -c "
+      python3 manage.py makemigrations commons &&  
+      python3 manage.py makemigrations customers &&  
+      python3 manage.py makemigrations catalogs &&  
+      python3 manage.py makemigrations carts &&  
+      python3 manage.py makemigrations products &&  
+      python3 manage.py makemigrations orders &&  
+      python3 manage.py migrate && 
+      celery -A config worker -c 1 --beat -l INFO"
+    volumes:
+      - .:/code
+
+  celery_beat:
+    build: .
+    restart: always
+    env_file: .env.compose.dev
+    command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
+      celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/code
+
+  web:
+    build: .
+    restart: always
+    env_file: .env.compose.dev
+    command: 
+      bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
+      python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "80:8000"
+
+networks:
+  pandama: 

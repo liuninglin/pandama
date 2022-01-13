@@ -46,7 +46,7 @@ class SpiderProductSelenium:
     def get_html_from_url_selenium(url):
         browser = webdriver.Chrome(ChromeDriverManager().install())
         SpiderProductSelenium.wait_for_ajax(browser)
-        browser.get('https://www.zgomart.com/static/mall_pc/#/goods/2')
+        browser.get('https://www.lotusfoodonline.com/static/mall_pc/#/goods/2')
         return browser.page_source
 
 class SpiderProductAPI:

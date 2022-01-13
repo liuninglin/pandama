@@ -1,9 +1,6 @@
 import environ
 
-
-root = environ.Path(__file__) - 3
 env = environ.Env()
-environ.Env.read_env()
 
 DEBUG = env.bool('DEBUG', default=False)
 SECRET_KEY = env.str('SECRET_KEY')
@@ -34,8 +31,8 @@ S3_PDP_SCREENSHOT_URL_PREFIX=env.str('S3_PDP_SCREENSHOT_URL_PREFIX', default='ht
 LOTUS_STORE_PITTS=env.int('LOTUS_STORAGE_PITTS', default=83)
 LOTUS_STORE_US_WEST=env.int('LOTUS_STORAGE_US_WEST', default=87)
 LOTUS_STORE_US_EAST=env.int('LOTUS_STORAGE_US_EAST', default=84)
-LOTUS_SINGLE_PRODUCT_API_URL_PREFIX=env.str('LOTUS_SINGLE_PRODUCT_API_URL_PREFIX', default='https://www.zgomart.com/mall/goods/')
-LOTUS_PRODUCTS_BY_CATALOG_API_URL_PREFIX=env.str('LOTUS_PRODUCTS_BY_CATALOG_API_URL_PREFIX', default='https://www.zgomart.com/mall/goods/')
+LOTUS_SINGLE_PRODUCT_API_URL_PREFIX=env.str('LOTUS_SINGLE_PRODUCT_API_URL_PREFIX', default='https://www.lotusfoodonline.com/mall/goods/')
+LOTUS_PRODUCTS_BY_CATALOG_API_URL_PREFIX=env.str('LOTUS_PRODUCTS_BY_CATALOG_API_URL_PREFIX', default='https://www.lotusfoodonline.com/mall/goods/')
 
 DYNAMIC_SYS_SETTINGS_KEY=env.str('DYNAMIC_SYS_SETTINGS_KEY', default='sys_configs')
 DYNAMIC_SYS_SETTINGS_SPIDER_PRODUCT_PROCESS_CATALOG_IDS=env.str('DYNAMIC_SYS_SETTINGS_SPIDER_PRODUCT_PROCESS_CATALOG_IDS', default='SPIDER_PRODUCT_PROCESS_CATALOG_IDS')

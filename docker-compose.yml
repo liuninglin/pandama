@@ -1,0 +1,61 @@
+version: "3.1"
+
+services:
+  postgres:
+    image: postgres:9.6
+    networks:
+      - pandama
+
+  redis:
+    image: redis:5.0.5
+    networks:
+      - pandama
+
+  mongodb:
+    image: mongo
+    networks:
+      - pandama
+
+  neo4j:
+    image: neo4j/neo4j-arm64-experimental:4.1.0-arm64
+    networks:
+      - pandama
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.2
+    networks:
+      - pandama
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    networks:
+      - pandama
+
+  celery_worker:
+    image: pandama_celery_worker
+    networks:
+      - pandama
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+      - mongodb
+      - neo4j
+      - elasticsearch
+
+  celery_beat:
+    image: pandama_celery_beat
+    networks:
+      - pandama
+    depends_on:
+      - celery_worker
+
+  web:
+    image: pandama_web
+    networks:
+      - pandama
+    depends_on:
+      - celery_beat
+
+networks:
+  pandama: 

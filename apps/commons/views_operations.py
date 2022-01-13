@@ -5,6 +5,7 @@ from apps.products.services_neo4j import Neo4jProcessor
 from apps.products.services_es import ESProcessor
 from apps.products.services_spider import SpiderProductAPI
 from apps.carts.views import clear_all_sessions
+from apps.catalogs.views import queryCatalogList
 from config.settings.config_common import \
     LOGTAIL_SOURCE_TOKEN, \
     DYNAMIC_SYS_SETTINGS_LOCKER_SPIDER_ASYNC_PROCESS, \
@@ -13,6 +14,7 @@ from config.settings.config_common import \
     DYNAMIC_SYS_SETTINGS_SPIDER_PRODUCT_PROCESS_BATCH_SIZE, \
     DYNAMIC_SYS_SETTINGS_LOCKER_INDEX_ASYNC_PROCESS
 from apps.commons.tools import CommonTools
+from django.http import HttpResponseForbidden    
 from logtail import LogtailHandler
 import logging
 

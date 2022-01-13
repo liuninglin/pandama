@@ -438,12 +438,24 @@ class ESProcessor:
         return res_array
 
     def create_mapping():
-        res = es.indices.create(index=ES_INDEX_PRODUCTS,
-                                ignore=400, body=ESProductModel.products_mappings)
-        return res
+        try:
+            es.indices.delete(index=ES_INDEX_PRODUCTS, ignore=[400, 404])
+        except Exception:
+            pass
+
+        try:
+            res = es.indices.create(index=ES_INDEX_PRODUCTS,
+                                    ignore=400, body=ESProductModel.products_mapping)
+            return res
+        except Exception:
+            return "complete"
 
     def delete_all_index():
-        es.delete_by_query(index=ES_INDEX_PRODUCTS, body={"query": {"match_all": {}}})
+        try:
+            es.delete_by_query(index=ES_INDEX_PRODUCTS, body={"query": {"match_all": {}}})
+        except Exception:
+            pass
+        
         logger.info("deleted all index")
     
     def query_product_array_and_sort_and_pagination(random_flag, query_json, sort_by, sort_order, page, page_size):

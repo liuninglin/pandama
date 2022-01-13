@@ -135,3 +135,9 @@ dmypy.json
 .idea
 my_env
 .vscode
+
+
+data/
+tmp.png
+tls-gen/
+cert_rabbitmq/
