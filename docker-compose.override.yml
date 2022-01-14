@@ -93,6 +93,3 @@ services:
       - .:/code
     ports:
       - "80:8000"
-
-networks:
-  pandama: 

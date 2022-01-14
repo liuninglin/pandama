@@ -4,37 +4,37 @@ services:
   postgres:
     image: postgres:9.6
     networks:
-      - pandama
+      - inner_pandama
 
   redis:
     image: redis:6.2
     networks:
-      - pandama
+      - inner_pandama
 
   mongodb:
     image: mongo:5.0.5
     networks:
-      - pandama
+      - inner_pandama
 
   neo4j:
     image: neo4j/neo4j-arm64-experimental:4.1.0-arm64
     networks:
-      - pandama
+      - inner_pandama
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.2
     networks:
-      - pandama
+      - inner_pandama
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
     networks:
-      - pandama
+      - inner_pandama
 
   celery_worker:
     image: pandama_celery_worker
     networks:
-      - pandama
+      - inner_pandama
     depends_on:
       - postgres
       - rabbitmq
@@ -46,16 +46,17 @@ services:
   celery_beat:
     image: pandama_celery_beat
     networks:
-      - pandama
+      - inner_pandama
     depends_on:
       - celery_worker
 
   web:
     image: pandama_web
     networks:
-      - pandama
+      - inner_pandama
     depends_on:
       - celery_beat
 
 networks:
-  pandama: 
+  inner_pandama: 
+    driver: bridge

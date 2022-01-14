@@ -4,7 +4,7 @@ env = environ.Env()
 
 DEBUG = env.bool('DEBUG', default=False)
 SECRET_KEY = env.str('SECRET_KEY')
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+ALLOWED_HOSTS = env.str('ALLOWED_HOSTS', default=['*']).split(' ')
 
 LOGTAIL_SOURCE_TOKEN=env.str('LOGTAIL_SOURCE_TOKEN')
 
