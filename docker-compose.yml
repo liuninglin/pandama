@@ -3,36 +3,43 @@ version: "3.1"
 services:
   postgres:
     image: postgres:9.6
+    restart: always
     networks:
       - inner_pandama
 
   redis:
     image: redis:6.2
+    restart: always
     networks:
       - inner_pandama
 
   mongodb:
     image: mongo:5.0.5
+    restart: always
     networks:
       - inner_pandama
 
   neo4j:
     image: neo4j/neo4j-arm64-experimental:4.1.0-arm64
+    restart: always
     networks:
       - inner_pandama
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.2
+    restart: always
     networks:
       - inner_pandama
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
+    restart: always
     networks:
       - inner_pandama
   
   kibana:
     image: docker.elastic.co/kibana/kibana:7.14.2
+    restart: always
     networks:
       - inner_pandama
     depends_on:
@@ -40,6 +47,7 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.14.2
+    restart: always
     networks:
       - inner_pandama
     depends_on:
@@ -47,6 +55,7 @@ services:
   
   apm:
     image: docker.elastic.co/apm/apm-server:7.14.2
+    restart: always
     networks:
       - inner_pandama
     depends_on:
@@ -54,13 +63,15 @@ services:
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:7.14.2
+    restart: always
     networks:
       - inner_pandama
     depends_on:
       - elasticsearch
 
   celery_worker:
-    image: pandama_celery_worker
+    image: pandama:latest
+    restart: always
     networks:
       - inner_pandama
     depends_on:
@@ -74,14 +85,16 @@ services:
       - kibana
 
   celery_beat:
-    image: pandama_celery_beat
+    image: pandama:latest
+    restart: always
     networks:
       - inner_pandama
     depends_on:
       - celery_worker
 
   web:
-    image: pandama_web
+    image: pandama:latest
+    restart: always
     networks:
       - inner_pandama
       - outer_pandama
@@ -90,6 +103,7 @@ services:
 
   nginx:
     image: nginx:1.13
+    restart: always
     depends_on:
       - web
     networks:

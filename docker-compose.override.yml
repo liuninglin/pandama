@@ -6,14 +6,12 @@ services:
       - POSTGRES_USER=pandama
       - POSTGRES_PASSWORD=pandama
       - POSTGRES_DB=pandama
-    restart: always
     ports:
       - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
   redis:
-    restart: always
     command: redis-server --requirepass pandama
     ports:
       - "6379:6379"
@@ -25,7 +23,6 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=pandama
       - MONGO_INITDB_ROOT_PASSWORD=pandama
       - MONGO_INITDB_DATABASE=pandama
-    restart: always
     ports:
       - "27017:27017"
     volumes:
@@ -34,7 +31,6 @@ services:
   neo4j:
     environment:
       - NEO4J_AUTH=neo4j/pandama
-    restart: always
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -48,7 +44,6 @@ services:
       - http.host=0.0.0.0
       - xpack.security.enabled=false
       - ES_JAVA_OPTS=-Xms750m -Xmx750m
-    restart: always
     ports:
       - "9200:9200"
     volumes:
@@ -61,7 +56,6 @@ services:
       - RABBITMQ_SSL_KEY_FILE=/certs/rabbitmq/server_key.pem
       - RABBITMQ_DEFAULT_USER=pandama
       - RABBITMQ_DEFAULT_PASS=pandama
-    restart: always
     ports:
       - "15672:15672"
       - "15671:15671"
@@ -72,45 +66,39 @@ services:
       - ./certs/rabbitmq:/certs/rabbitmq
 
   kibana:
-    restart: always
     ports:
       - "5601:5601"
     volumes:
       - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
 
   logstash:
-    restart: always
     ports:
       - "5044:5044"
       - "5001:5000/tcp"
       - "5001:5000/udp"
       - "9600:9600"
     volumes:
-      # - ./config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
 
   apm:
-    restart: always
     ports:
       - "8200:8200"
     volumes:
       - ./config/apm.yml:/usr/share/apm/config/apm.yml
 
   filebeat:
-    restart: always
+    command: filebeat -e -d "*"
     volumes:
       - ./logs:/logs
       - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
-    command: filebeat -e -d "*"
-    
 
   celery_worker:
     build: .
-    restart: always
+    image: pandama:latest
     env_file: ./env/.env.dev
-    command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
-      sh -c "
-      python3 manage.py makemigrations commons &&  
+    command: 
+      bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
+      sh -c "python3 manage.py makemigrations commons &&  
       python3 manage.py makemigrations customers &&  
       python3 manage.py makemigrations catalogs &&  
       python3 manage.py makemigrations carts &&  
@@ -123,22 +111,19 @@ services:
       - ./logs:/logs
 
   celery_beat:
+    env_file: ./env/.env.dev
+    command: 
+      bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
+      celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
       - POSTGRES_USER=pandama
       - POSTGRES_PASSWORD=pandama
       - POSTGRES_DB=pandama
-    build: .
-    restart: always
-    env_file: ./env/.env.dev
-    command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
-      celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - ./code:/code
       - ./logs:/logs
 
   web:
-    build: .
-    restart: always
     env_file: ./env/.env.dev
     command: 
       bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
@@ -150,11 +135,9 @@ services:
       - "8000:8000"
   
   nginx:
-    restart: always
     ports:
       - 80:80
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
       - ./logs/nginx:/var/log/nginx
-      - ./static:/usr/share/nginx/html/static
- 
+      - ./static:/usr/share/nginx/html/static 

@@ -6,41 +6,37 @@ services:
       - POSTGRES_USER=pandama
       - POSTGRES_PASSWORD=pandama
       - POSTGRES_DB=pandama
-    restart: always
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
 
   redis:
-    restart: always
     command: redis-server --requirepass pandama
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      - ./data/redis:/data
 
   mongodb:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=pandama
       - MONGO_INITDB_ROOT_PASSWORD=pandama
       - MONGO_INITDB_DATABASE=pandama
-    restart: always
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - ./data/mongo:/data/db
 
   neo4j:
+    image: neo4j:4.4.3
     environment:
       - NEO4J_AUTH=neo4j/pandama
-    image: neo4j:4.4.3
-    restart: always
     ports:
       - "7474:7474"
       - "7687:7687"
     volumes:
-      - neo4j_data:/data
+      - ./data/neo4j:/data
 
   elasticsearch:
     environment:
@@ -49,11 +45,10 @@ services:
       - http.host=0.0.0.0
       - xpack.security.enabled=false
       - ES_JAVA_OPTS=-Xms750m -Xmx750m
-    restart: always
     ports:
       - "9200:9200"
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
 
   rabbitmq:
     environment:
@@ -62,45 +57,44 @@ services:
       - RABBITMQ_SSL_KEY_FILE=/certs/rabbitmq/server_key.pem
       - RABBITMQ_DEFAULT_USER=pandama
       - RABBITMQ_DEFAULT_PASS=pandama
-    restart: always
     ports:
       - "15672:15672"
       - "15671:15671"
       - "5672:5672"
       - "5671:5671"
     volumes:
-      - ./data/rabbitmq/:/var/lib/rabbitmq/
-      - ./certs/rabbitmq/:/certs/rabbitmq/
+      - ./data/rabbitmq:/var/lib/rabbitmq
+      - ./certs/rabbitmq:/certs/rabbitmq
 
   kibana:
-    restart: always
     ports:
       - "5601:5601"
     volumes:
       - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
 
   logstash:
-    restart: always
     ports:
       - "5044:5044"
       - "5001:5000/tcp"
       - "5001:5000/udp"
       - "9600:9600"
     volumes:
-      # - ./config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-  
+
+  apm:
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./config/apm.yml:/usr/share/apm/config/apm.yml
+
   filebeat:
-    restart: always
+    command: filebeat -e -d "*"
     volumes:
       - ./logs:/logs
       - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
-    command: filebeat -e -d "*"
 
   celery_worker:
-    image: pandama_web
-    restart: always
-    env_file: .env.prod
+    env_file: ./env/.env.prod
     command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
       sh -c "
       python3 manage.py makemigrations commons &&  
@@ -111,51 +105,37 @@ services:
       python3 manage.py makemigrations orders &&  
       python3 manage.py migrate && 
       celery -A config worker -c 1 --beat -l INFO"
+    volumes:
+      - ./code:/code
+      - ./logs:/logs
 
   celery_beat:
+    env_file: ./env/.env.prod
+    command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
+      celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
       - POSTGRES_USER=pandama
       - POSTGRES_PASSWORD=pandama
       - POSTGRES_DB=pandama
-    image: pandama_web
-    restart: always
-    env_file: .env.prod
-    command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
-      celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
-
-    
+    volumes:
+      - ./code:/code
+      - ./logs:/logs
 
   web:
-    image: pandama_web
-    restart: always
-    env_file: .env.prod
+    env_file: ./env/.env.prod
     command: 
       bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
-      gunicorn --bind :8000 config.wsgi
+      python3 manage.py runserver 0.0.0.0:8000
     volumes:
-      - static_data:/code/static
-    networks:
-      - inner_pandama
-      - outer_pandama
+      - ./code:/code
+      - ./logs:/logs
+    ports:
+      - "8000:8000"
 
   nginx:
-    image: nginx:1.13
-    restart: always
     ports:
       - 80:80
     volumes:
-      - ./conf.d:/etc/nginx/conf.d
-      - ./logs/nginx/access.log:/var/log/nginx/access.log
-    depends_on:
-      - web
-    networks:
-      - outer_pandama
-
-volumes:
-  elasticsearch_data:
-  postgres_data:
-  redis_data:
-  mongo_data:
-  rabbitmq_data:
-  neo4j_data:
-  static_data:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./logs/nginx:/var/log/nginx
+      - ./static:/usr/share/nginx/html/static

@@ -31,19 +31,19 @@ class CommonTools:
     def redis_init():
         CommonTools.update_settings_by_key(
             DYNAMIC_SYS_SETTINGS_SPIDER_PRODUCT_PROCESS_CATALOG_IDS, 
-            env.str('SPIDER_PRODUCT_PROCESS_CATALOG_IDS', default='130,131,133,137,139,141,751,788,813,829,835,853'))
+            env.str('REDIS_SYSTEM_INIT_VALUE_SPIDER_PRODUCT_PROCESS_CATALOG_IDS', default='130,131,133,137,139,141,751,788,813,829,835,853'))
         CommonTools.update_settings_by_key(
             DYNAMIC_SYS_SETTINGS_SPIDER_PRODUCT_PROCESS_START_INDEX, 
-            env.str('SPIDER_PRODUCT_PROCESS_START_INDEX', default='0'))
+            env.str('REDIS_SYSTEM_INIT_VALUE_SPIDER_PRODUCT_PROCESS_START_INDEX', default='0'))
         CommonTools.update_settings_by_key(
             DYNAMIC_SYS_SETTINGS_SPIDER_PRODUCT_PROCESS_BATCH_SIZE,
-            env.str('SPIDER_PRODUCT_PROCESS_BATCH_SIZE', default='5'))
+            env.str('REDIS_SYSTEM_INIT_VALUE_SPIDER_PRODUCT_PROCESS_BATCH_SIZE', default='5'))
         CommonTools.update_settings_by_key(
             DYNAMIC_SYS_SETTINGS_LOCKER_SPIDER_ASYNC_PROCESS,
-            env.str('LOCKER_SPIDER_ASYNC_PROCESS', default='0'))
+            env.str('REDIS_SYSTEM_INIT_VALUE_LOCKER_SPIDER_ASYNC_PROCESS', default='0'))
         CommonTools.update_settings_by_key(
             DYNAMIC_SYS_SETTINGS_LOCKER_INDEX_ASYNC_PROCESS, 
-            env.str('LOCKER_INDEX_ASYNC_PROCESS', default='0'))
+            env.str('REDIS_SYSTEM_INIT_VALUE_LOCKER_INDEX_ASYNC_PROCESS', default='0'))
 
     def check_is_empty(str):
         if str is None or str == '':
