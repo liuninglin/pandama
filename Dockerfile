@@ -4,7 +4,8 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /code
-COPY . /code/
+COPY ./code /code
+
 RUN apt-get update && apt-get install -y \
     libgeos-dev
 

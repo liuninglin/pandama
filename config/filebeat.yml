@@ -1,0 +1,23 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /logs/django_app*.log
+    - /logs/django_request*.log
+    - /logs/django_celery*.log
+  fields:
+    type: django
+  fields_under_root: true
+  scan_frequency: 5s
+
+- type: log
+  enabled: true
+  paths:
+      - /logs/nginx/access*.log
+  fields:
+    type: nginx
+  fields_under_root: true
+  scan_frequency: 5s
+
+output.logstash:
+  hosts: ["logstash:5044"]

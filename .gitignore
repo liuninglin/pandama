@@ -132,13 +132,10 @@ dmypy.json
 
 .history/
 .DS_Store
-.idea
-my_env
-.vscode
-
-
+.idea/
+my_env/
+.vscode/
 data/
-tmp.png
-tls-gen/
-cert_rabbitmq/
-.env.*
+certs/
+env/
+logs/

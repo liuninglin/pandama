@@ -2,17 +2,18 @@ version: "3.1"
 
 services:
   postgres:
+    environment:
+      - POSTGRES_USER=pandama
+      - POSTGRES_PASSWORD=pandama
+      - POSTGRES_DB=pandama
     restart: always
-    env_file: .env.compose.dev
     ports:
       - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-      - ./config/initialization/sql_catalogs.sql:/docker-entrypoint-initdb.d/init.sql
 
   redis:
     restart: always
-    env_file: .env.compose.dev
     command: redis-server --requirepass pandama
     ports:
       - "6379:6379"
@@ -20,16 +21,20 @@ services:
       - ./data/redis:/data
 
   mongodb:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=pandama
+      - MONGO_INITDB_ROOT_PASSWORD=pandama
+      - MONGO_INITDB_DATABASE=pandama
     restart: always
-    env_file: .env.compose.dev
     ports:
       - "27017:27017"
     volumes:
       - ./data/mongo:/data/db
 
   neo4j:
+    environment:
+      - NEO4J_AUTH=neo4j/pandama
     restart: always
-    env_file: .env.compose.dev
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -37,16 +42,26 @@ services:
       - ./data/neo4j:/data
 
   elasticsearch:
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=pandama
+      - http.host=0.0.0.0
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms750m -Xmx750m
     restart: always
-    env_file: .env.compose.dev
     ports:
       - "9200:9200"
     volumes:
       - ./data/elasticsearch:/usr/share/elasticsearch/data
 
   rabbitmq:
+    environment:
+      - RABBITMQ_SSL_CA_FILE=/certs/rabbitmq/ca_certificate.pem
+      - RABBITMQ_SSL_CERT_FILE=/certs/rabbitmq/server_certificate.pem
+      - RABBITMQ_SSL_KEY_FILE=/certs/rabbitmq/server_key.pem
+      - RABBITMQ_DEFAULT_USER=pandama
+      - RABBITMQ_DEFAULT_PASS=pandama
     restart: always
-    env_file: .env.compose.dev
     ports:
       - "15672:15672"
       - "15671:15671"
@@ -54,12 +69,38 @@ services:
       - "5671:5671"
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
-      - ./cert_rabbitmq:/cert_rabbitmq
+      - ./certs/rabbitmq:/certs/rabbitmq
+
+  kibana:
+    restart: always
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
+
+  logstash:
+    restart: always
+    ports:
+      - "5044:5044"
+      - "5001:5000/tcp"
+      - "5001:5000/udp"
+      - "9600:9600"
+    volumes:
+      # - ./config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  
+  filebeat:
+    restart: always
+    volumes:
+      - ./logs:/logs
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    command: filebeat -e -d "*"
+    
 
   celery_worker:
     build: .
     restart: always
-    env_file: .env.compose.dev
+    env_file: ./env/.env.dev
     command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
       sh -c "
       python3 manage.py makemigrations commons &&  
@@ -71,25 +112,42 @@ services:
       python3 manage.py migrate && 
       celery -A config worker -c 1 --beat -l INFO"
     volumes:
-      - .:/code
+      - ./code:/code
+      - ./logs:/logs
 
   celery_beat:
+    environment:
+      - POSTGRES_USER=pandama
+      - POSTGRES_PASSWORD=pandama
+      - POSTGRES_DB=pandama
     build: .
     restart: always
-    env_file: .env.compose.dev
+    env_file: ./env/.env.dev
     command: bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
       celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - .:/code
+      - ./code:/code
+      - ./logs:/logs
 
   web:
     build: .
     restart: always
-    env_file: .env.compose.dev
+    env_file: ./env/.env.dev
     command: 
       bash ./wait-for-it.sh postgres:5432 -t 0 -s -- 
       python3 manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - ./code:/code
+      - ./logs:/logs
     ports:
-      - "80:8000"
+      - "8000:8000"
+  
+  nginx:
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./logs/nginx:/var/log/nginx
+      - ./static:/usr/share/nginx/html/static
+ 

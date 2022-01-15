@@ -30,6 +30,27 @@ services:
     image: rabbitmq:3-management-alpine
     networks:
       - inner_pandama
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.2
+    networks:
+      - inner_pandama
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.14.2
+    networks:
+      - inner_pandama
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.14.2
+    networks:
+      - inner_pandama
+    depends_on:
+      - elasticsearch
 
   celery_worker:
     image: pandama_celery_worker
@@ -42,6 +63,8 @@ services:
       - mongodb
       - neo4j
       - elasticsearch
+      - logstash
+      - kibana
 
   celery_beat:
     image: pandama_celery_beat
@@ -54,9 +77,25 @@ services:
     image: pandama_web
     networks:
       - inner_pandama
+      - outer_pandama
     depends_on:
       - celery_beat
 
+  nginx:
+    image: nginx:1.13
+    depends_on:
+      - web
+    networks:
+      - outer_pandama
+
 networks:
-  inner_pandama: 
-    driver: bridge
+  inner_pandama:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.20.0.0/16
+  outer_pandama:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/16
