@@ -44,6 +44,13 @@ services:
       - inner_pandama
     depends_on:
       - elasticsearch
+  
+  apm:
+    image: docker.elastic.co/apm/apm-server:7.14.2
+    networks:
+      - inner_pandama
+    depends_on:
+      - elasticsearch
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:7.14.2

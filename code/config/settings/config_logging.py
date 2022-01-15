@@ -49,6 +49,10 @@ LOGGING = {
             'backupCount': 10,
             'formatter': 'simple',
         },
+        'elasticapm': {
+            'level': 'WARNING',
+            'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
+        },
     },
     'loggers': {
         'celery': {

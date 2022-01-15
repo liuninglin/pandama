@@ -88,7 +88,14 @@ services:
     volumes:
       # - ./config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-  
+
+  apm:
+    restart: always
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./config/apm.yml:/usr/share/apm/config/apm.yml
+
   filebeat:
     restart: always
     volumes:

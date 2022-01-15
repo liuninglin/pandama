@@ -12,6 +12,7 @@ from config.settings.config_neo4j import *
 from config.settings.config_neo4j import *
 from config.settings.config_redis import *
 from config.settings.config_logging import *
+from config.settings.config_apm import *
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'fontawesome_free',
     'django_user_agents',
+    'elasticapm.contrib.django',
     'apps.commons',
     "apps.commons.templatetags",
     'apps.customers',
@@ -59,6 +61,7 @@ MIDDLEWARE = [
     'apps.commons.request_intercept_middleware.browser_check',
     # 'django.middleware.cache.FetchFromCacheMiddleware',           # page caching
     'kolo.middleware.KoloMiddleware',
+    'elasticapm.contrib.django.middleware.TracingMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
