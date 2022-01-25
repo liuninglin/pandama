@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Mirrored from demo.designing-world.com/suha-v1.1.0/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Jan 2020 15:57:15 GMT -->
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags-->
+    <!-- Title-->
+    <title>Pandama - Online Store</title>
+    <!-- Favicon-->
+    <link rel="icon" href="{% static 'online-store/img/core-img/favicon.ico' %}">
+    <!-- Stylesheet-->
+    <link rel="stylesheet" href="{% static 'online-store/css/style.css' %}">
+    <link href="{% static 'fontawesome_free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/4.3.0/introjs.min.css" integrity="sha512-YZO1kAqr8VPYJMaOgT4ZAIP4OeCuAWoZqgdvVYjeqyfieNWrUTzZrrxpgAdDrS7nV3sAVTKdP6MSKhqaMU5Q4g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+  <body>
+    <!-- Preloader-->
+    <div class="preloader" id="preloader">
+      <div class="spinner-grow text-secondary" role="status">
+        <div class="sr-only">Loading...</div>
+      </div>
+    </div>
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+      {% block header %}
+      {% endblock %}
+    </div>
+    <!-- Side Nav Wrapper-->
+    <div class="suha-sidenav-wrapper" id="sidenavWrapper">
+    {% if request.session.Customer != null %}
+      <!-- Sidenav Profile-->
+        <div class="sidenav-profile">
+          <div class="user-profile"><img src="{% static request.session.Customer.img %}" alt="" onerror="this.src='{% static "online-store/img/core-img/logo.png" %}'"></div>
+          <div class="user-info">
+            <h6 class="user-name mb-0">{{ request.session.Customer.first_name }} {{ request.session.Customer.last_name }}</h6>
+            <p class="available-balance">Balance <span>$<span class="counter">{{ request.session.Customer.balance|stringformat:".2f" }}</span></span></p>
+          </div>
+        </div>
+        <!-- Sidenav Nav-->
+        <ul class="sidenav-nav">
+          <li><a href="{% url 'store_page' page='profile' %}"><i class="lni-user"></i>My Profile</a></li>
+          <!-- <li><a href="{% url 'store_page' page='notifications' %}"><i class="lni-alarm lni-tada-effect"></i>Notifications<span class="ml-3 badge badge-warning">3</span></a></li> -->
+          <li><a href="{% url 'store_page' page='wish-list' %}"><i class="lni-heart-filled"></i>My Wishlist</a></li>
+          <!-- <li><a href="{% url 'store_page' page='settings' %}"><i class="lni-cog"></i>Settings</a></li> -->
+          <li><a href="{% url 'store_page' page='logout' %}"><i class="lni-power-switch"></i>Sign Out</a></li>
+        </ul>
+    {% else %}
+      <!-- Sidenav Profile-->
+      <div class="sidenav-profile">
+        <!-- <div class="user-profile"><img src="{% static 'online-store/img/bg-img/9.jpg' %}" alt=""></div>
+        <div class="user-info">
+          <h6 class="user-name mb-0">Unlogged</h6>
+          <p class="available-balance">Balance <span>$<span class="counter">0</span></span></p>
+        </div> -->
+      </div>
+      <!-- Sidenav Nav-->
+      <ul class="sidenav-nav">
+        <!-- <li><a href="{% url 'store_page' page='login' %}"><i class="lni-user"></i>My Profile</a></li> -->
+        <!-- <li><a href="{% url 'store_page' page='notifications' %}"><i class="lni-alarm lni-tada-effect"></i>Notifications<span class="ml-3 badge badge-warning">3</span></a></li> -->
+        <!-- <li><a href="{% url 'store_page' page='login' %}"><i class="lni-heart-filled"></i>My Wishlist</a></li> -->
+        <!-- <li><a href="{% url 'store_page' page='settings' %}"><i class="lni-cog"></i>Settings</a></li> -->
+        <li><a href="{% url 'store_page' page='login' %}"><i class="fas fa-sign-in-alt"></i>Sign In</a></li>
+        <li><a href="{% url 'store_customers_register' %}"><i class="fas fa-plus"></i>Register Now</a></li>
+      </ul>
+
+      <div style="color: white; text-align:center;margin-top:200px">
+        <div style="font-size: 50px;">
+          
+        </div>
+        <div style="font-size: 15px;margin-left: 20px;margin-right: 20px;">
+          "I am always, always watching you. And I'll be waiting here for your feelings to catch up on my own." <br/>- Shungiku Nakamura
+        </div>
+      </div>
+    {% endif %}
+
+      <!-- Go Back Button-->
+      <div class="go-home-btn" id="goHomeBtn"><i class="lni-arrow-left"></i></div>
+    </div>
+    <div class="page-content-wrapper">
+      <div class="container">
+        {% csrf_token %}
+        <div class="sidenav-black-overlay"></div>
+         
+        {% block content %}
+        {% endblock %}
+
+        <div id="loading_div" style="text-align: center; margin-bottom: 100px; height: 100px; display: none">
+          <img src="{% static 'online-store/img/core-img/loading.gif' %}" style="width: 30%; margin-left: -10%;" />
+        </div>
+      </div>
+    </div>
+    <!-- Footer Nav-->
+    <div class="footer-nav-area" id="footerNav">
+      <div class="suha-footer-nav h-100">
+        <ul class="h-100 d-flex align-items-center justify-content-between">
+          
+          
+          <li>
+              {% if 'home' in request.path %}
+              <a href="{% url 'store_page' page='home' %}" class="text-primary">
+              {% else %}
+              <a href="{% url 'store_page' page='home' %}">
+              {% endif %}
+              <i class="fas fa-home"></i>Home
+            </a>
+          </li>
+          <li>
+            {% if 'catalog' in request.path %}
+            <a href="{% url 'store_page' page='catalog' %}" class="text-primary">
+            {% else %}
+            <a href="{% url 'store_page' page='catalog' %}">
+            {% endif %}
+            <i class="fas fa-th"></i>Catalog
+            </a>
+          </li>
+          <li>
+            {% if 'order' in request.path %}
+            <a href="{% url 'store_page' page='catalog' %}" class="text-primary">
+            {% else %}
+            <a href="{% url 'store_page' page='order' %}">
+            {% endif %}
+              <i class="fas fa-receipt"></i>Order
+            </a>
+          </li>
+          <li>
+            {% if 'cart' in request.path %}
+            <a href="{% url 'store_page' page='cart' %}" class="text-primary">
+            {% else %}
+            <a href="{% url 'store_page' page='cart' %}">
+            {% endif %}
+              <i class="fas fa-shopping-cart"></i>Cart
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+    <!-- All JavaScript Files-->
+    <script src="{% static 'online-store/js/jquery.min.js' %}"></script>
+    <script src="{% static 'online-store/js/popper.min.js' %}"></script>
+    <script src="{% static 'online-store/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'online-store/js/waypoints.min.js' %}"></script>
+    <script src="{% static 'online-store/js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'online-store/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'online-store/js/jquery.animatedheadline.min.js' %}"></script>
+    <script src="{% static 'online-store/js/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'online-store/js/wow.min.js' %}"></script>
+    <script src="{% static 'online-store/js/jarallax.min.js' %}"></script>
+    <script src="{% static 'online-store/js/jarallax-video.min.js' %}"></script>
+    <script src="{% static 'online-store/js/default/jquery.passwordstrength.js' %}"></script>
+    <script src="{% static 'online-store/js/default/active.js' %}"></script>
+    <script src="{% static 'online-store/js/default/common.js' %}"></script>
+    <script src="{% static 'online-store/js/jquery.cookie.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/4.3.0/intro.min.js" integrity="sha512-WYNEDpX7FCz0ejmdUFl444n+v7gDgDFYmxy2YBx99v15UUk3zU5ZWYFBXFCvWYvd+nv/guwUnXmrecK7Ee0Wtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {% block extrascripts %}
+    {% endblock %}
+  </body>
+<!-- Mirrored from demo.designing-world.com/suha-v1.1.0/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Jan 2020 15:57:15 GMT -->
+</html>

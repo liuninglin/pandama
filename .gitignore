@@ -60,6 +60,7 @@ coverage.xml
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+migrations
 
 # Flask stuff:
 instance/
@@ -127,3 +128,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+.history/
+.DS_Store
+.idea/
+my_env/
+.vscode/
+data/
+certs/
+env/
+logs/
+docker-swarm.yml

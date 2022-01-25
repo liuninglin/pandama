@@ -1,0 +1,12 @@
+apm-server:
+  host: 0.0.0.0:8200
+
+output.elasticsearch:
+    hosts: ["elasticsearch:9200"]
+    username: "elastic"
+    password: "pandama"
+
+setup.kibana:
+  host: 'kibana:5601'
+
+setup.dashboards.enabled: true

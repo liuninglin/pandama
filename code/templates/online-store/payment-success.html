@@ -1,0 +1,26 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+
+{% block header %}
+      <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Back Button-->
+        <div class="back-button">
+          <!-- <a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a> -->
+        </div>
+        <!-- Page Title-->
+        <div class="page-heading">
+          <h6 class="mb-0">Payment Success</h6>
+        </div>
+        <!-- Navbar Toggler-->
+        <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler"><span></span><span></span><span></span></div>
+      </div>
+{% endblock %}
+
+{% block content %}
+      <!-- Order/Payment Success-->
+      <div class="order-success-wrapper">
+        <div class="content"><i class="lni-check-mark-circle lni-flashing-effect"></i>
+          <h5>Payment Done</h5>
+        </div>
+      </div>
+{% endblock %}

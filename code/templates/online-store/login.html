@@ -1,0 +1,35 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <!-- Login Wrapper Area-->
+    <div class="login-wrapper d-flex align-items-center justify-content-center text-center">
+      <!-- Background Shape-->
+      <div class="background-shape"></div>
+      <div class="container"><img class="big-logo" src="{% static '/online-store/img/core-img/logo_with_letter.png' %}" alt="">
+        <!-- Register Form-->
+        <div class="register-form mt-5 px-4">
+          <form action="login" method="post">
+            <div class="form-group text-left mb-4"><span>Username</span>
+              <label for="username"><i class="lni-user"></i></label>
+              <input class="form-control" id="username" name = "username" type="text" placeholder="info@example.com">
+            </div>
+            <div class="form-group text-left mb-4"><span>Password</span>
+              <label for="password"><i class="lni-lock"></i></label>
+              <input class="form-control" id="password" type="password" name = "password" placeholder="********************">
+            </div>
+            <p style="color:red;">{{feedback}}<p/>
+            {% csrf_token %}
+            <button class="btn btn-success btn-lg w-100">Login</button>
+          </form>
+        </div>
+        <!-- Login Meta-->
+        <div class="login-meta-data"><a class="forgot-password d-block mt-3 mb-1"></a>
+          <p class="text-white mb-0">Didn't have an account?<a class="ml-2" href="{% url 'store_page' page='register' %}">Register</a></p>
+        </div>
+      </div>
+    </div>
+{% endblock %}

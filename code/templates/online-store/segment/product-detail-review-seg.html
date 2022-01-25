@@ -1,0 +1,52 @@
+{% load static %}
+{% load tz %}
+
+<li class="single-user-review d-flex">
+    <div class="user-thumbnail"><img src="{% static review.customer.profile_img %}" alt="{{ review.customer.img }}" onerror="this.src='{% static "online-store/img/core-img/logo.png" %}'"></div>
+    <div class="rating-comment">
+        <div class="rating">
+            {% if review.star == 1 %}
+            <i class="lni-star-filled"></i>
+            <i class="lni-star"></i>
+            <i class="lni-star"></i>
+            <i class="lni-star"></i>
+            <i class="lni-star"></i>
+            {% endif %}
+            {% if review.star == 2 %}
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star"></i>
+            <i class="lni-star"></i>
+            <i class="lni-star"></i>
+            {% endif %}
+            {% if review.star == 3 %}
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star"></i>
+            <i class="lni-star"></i>
+            {% endif %}
+            {% if review.star == 4 %}
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star"></i>
+            {% endif %}
+            {% if review.star == 5 %}
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            <i class="lni-star-filled"></i>
+            {% endif %}
+        </div>
+        <p class="comment mb-0">{{ review.content }}</p><span
+            class="name-date">
+            {{ review.customer.first_name }} {{ review.customer.last_name }}
+            {% with dateime=review.created_time|timezone:'US/Eastern' %}
+            {{dateime|date:'Y-m-d H:i'}}
+            {% endwith %}
+        </span>
+    </div>
+</li>

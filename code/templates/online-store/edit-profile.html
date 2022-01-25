@@ -1,0 +1,70 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+
+{% block header %}
+      <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Back Button-->
+        <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a></div>
+        <!-- Page Title-->
+        <div class="page-heading">
+          <h6 class="mb-0">Edit Profile</h6>
+        </div>
+        <!-- Navbar Toggler-->
+        <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler"><span></span><span></span><span></span></div>
+      </div>
+{% endblock %}
+
+{% block content %}
+        <!-- Profile Wrapper-->
+        <div class="profile-wrapper-area py-3">
+          <!-- User Information-->
+          <div class="card user-info-card">
+            <div class="card-body p-4 d-flex align-items-center">
+              <div class="user-profile mr-3"><img src="{% static request.session.Customer.img %}" alt="" onerror="this.src='{% static "online-store/img/core-img/logo.png" %}'">
+                <div class="change-user-thumb">
+                  <form action="edit-profile-img" enctype="multipart/form-data" method="POST">
+                    <input class="form-control-file" name="img" type="file" onchange="form.submit()">
+                    <button><i class="lni-pencil"></i></button>
+                    {% csrf_token %}
+                  </form>
+                </div>
+              </div>
+              <div class="user-info">
+                <h5 class="mb-0">{{ Username }}</h5>
+              </div>
+            </div>
+          </div>
+          <!-- User Meta Data-->
+          <div class="card user-data-card">
+            <div class="card-body">
+              <form action="edit-profile" method="POST">
+                <div class="form-group">
+                  <div class="title mb-2"><i class="lni-user"></i><span>Username</span></div>
+                  <input class="form-control" type="text" name="username" value= "{{Username}}" >
+                </div>
+                <div class="form-group">
+                  <div class="title mb-2"><i class="lni-user"></i><span>Full Name</span></div>
+                  <input class="form-control" type="text" name="realname" value="{{FullName}}">
+                </div>
+                <div class="form-group">
+                  <div class="title mb-2"><i class="lni-phone-handset"></i><span>Phone</span></div>
+                  <input class="form-control" type="text" name="phone" value= "{{Phone}}">
+                </div>
+                <div class="form-group">
+                  <div class="title mb-2"><i class="lni-envelope"></i><span>Email Address</span></div>
+                  <input class="form-control" type="email" name="email" value= "{{Email}}" >
+                </div>
+                <div class="form-group">
+                  <div class="title mb-2"><i class="lni-map-marker"></i><span>Shipping Address</span></div>
+                  <input class="form-control" type="text" name="address" value= "{{Shipping}}">
+                </div>
+                {% csrf_token %}
+                <button class="btn btn-success w-100" type="submit">Save All Changes</button>
+                {% if feedback != null %}
+                <p style="background-color: #e76f51; color: white;margin-top: 3vw;border-radius: 1vw;text-align: center;">{{feedback}}<p/>
+                {% endif %}
+              </form>
+            </div>
+          </div>
+        </div>
+{% endblock %}

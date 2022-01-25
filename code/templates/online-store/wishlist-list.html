@@ -1,0 +1,56 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+{% block header %}
+<div class="container h-100 d-flex align-items-center justify-content-between">
+    <!-- Back Button-->
+    <div class="back-button"><a onclick="goBack()"><i class="lni-arrow-left"></i>Back</a>
+    </div>
+    <!-- Page Title-->
+    <div class="page-heading">
+        <h6 class="mb-0">Wishlist</h6>
+    </div>
+    <!-- Navbar Toggler-->
+    <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler">
+        <span></span><span></span><span></span></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="top-products-area pt-3">
+    <div class="container">
+        <div class="section-heading d-flex align-items-center justify-content-between">
+            <h6 class="ml-1">Wishlist</h6>
+            <!-- Layout Options-->
+            <!--<div class="layout-options"><a class="active" href="{% url 'store_page' page='wishlist-list' %}"><i class="fa fa-th-large"></i></a><a href="{% url 'store_page' page='wishlist-list' %}"><i class="fa fa-th-list"></i></a></div>-->
+        </div>
+        <div class="row" id = "wishlist">
+
+          {% for product in es_products.hits.hits %}
+            {% include 'online-store/segment/product-square-show-seg.html' with product_flag=False scroll_flag=False tag_show_flag=True %}
+          {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extrascripts %}
+<script>
+  $(window).scroll(function(){
+    page_scroll_detector("store/ajax-wish-list", parseInt('{{ page_size }}'), parseInt('{{ total_size }}'), "#wishlist", null);
+  });
+  
+  function removeFromWishList(thisObj, product_number) {
+    params={"product_number": product_number};
+    commonAjax("store/delete-wish-list", "POST", params, "json", 
+      function(){
+        $(thisObj).parent().parent().parent().remove();
+      }, 
+      function(){
+        alertShow("error", "Occurred error!");
+      });
+  }
+</script>
+{% endblock %}
+

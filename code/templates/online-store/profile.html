@@ -1,0 +1,64 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+
+{% block header %}
+      <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Logo Wrapper-->
+        <div class="logo-wrapper"><a href="{% url 'store_page' page='home' %}"><img src="{% static 'online-store/img/core-img/logo_with_letter.png' %}" alt=""></a></div>
+        <!-- Search Form-->
+        <div class="top-search-form">
+          <form action="product-list" method="GET">
+            <input class="form-control" type="search" placeholder="Enter your keyword">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+        <!-- Navbar Toggler-->
+        <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler"><span></span><span></span><span></span></div>
+      </div>
+{% endblock %}
+
+{% block content %}
+        <!-- Profile Wrapper-->
+        <div class="profile-wrapper-area py-3">
+          <!-- User Information-->
+          <div class="card user-info-card">
+            <div class="card-body p-4 d-flex align-items-center">
+              <div class="user-profile mr-3"><img src="{% static request.session.Customer.img %}" alt="" onerror="this.src='{% static "online-store/img/core-img/logo.png" %}'"></div>
+              <div class="user-info">
+                <h5 class="mb-0">{{Username}}</h5>
+              </div>
+            </div>
+          </div>
+          <!-- User Meta Data-->
+          <div class="card user-data-card">
+            <div class="card-body">
+              <div class="single-profile-data d-flex align-items-center justify-content-between">
+                <div class="title"><i class="lni-user"></i><span>Username</span></div>
+                <div class="data-content">{{Username}}</div>
+              </div>
+              <div class="single-profile-data d-flex align-items-center justify-content-between">
+                <div class="title"><i class="lni-user"></i><span>Full Name</span></div>
+                <div class="data-content">{{FullName}}</div>
+              </div>
+              <div class="single-profile-data d-flex align-items-center justify-content-between">
+                <div class="title"><i class="lni-phone-handset"></i><span>Phone</span></div>
+                <div class="data-content">{{Phone}}</div>
+              </div>
+              <div class="single-profile-data d-flex align-items-center justify-content-between">
+                <div class="title"><i class="lni-envelope"></i><span>Email Address</span></div>
+                <div class="data-content">{{Email}}                              </div>
+              </div>
+              <div class="single-profile-data d-flex align-items-center justify-content-between">
+                <div class="title"><i class="lni-map-marker"></i><span>Shipping</span></div>
+                <div class="data-content">{{Shipping}}</div>
+              </div>
+              <div class="single-profile-data d-flex align-items-center justify-content-between">
+                <div class="title"><i class="lni-star"></i><span>My Order</span></div>
+                <div class="data-content"><a class="btn btn-danger btn-sm" href="{% url 'store_page' page='order' %}">View</a></div>
+              </div>
+            </div>
+          </div>
+          <!-- Edit Profile-->
+          <div class="edit-profile-btn mt-3"><a class="btn btn-success w-100" href="{% url 'store_page' page='edit-profile' %}"><i class="lni-pencil mr-2"></i>Edit Profile</a></div>
+        </div>
+{% endblock %}

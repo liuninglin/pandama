@@ -1,0 +1,161 @@
+{% extends "online-store/common/base.html" %}
+{% load static %}
+
+{% block header %}
+      <div class="container h-100 d-flex align-items-center justify-content-between">
+        <!-- Logo Wrapper-->
+        <div class="logo-wrapper"><a href="{% url 'store_page' page='home' %}"><img src="{% static 'online-store/img/core-img/logo_with_letter.png' %}" alt=""></a></div>
+        <!-- Search Form-->
+        <div class="top-search-form">
+          <form action="product-list" method="GET">
+            <input class="form-control" type="search" id="product_search_input" name="search" placeholder="Enter your keyword">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+        <!-- Navbar Toggler-->
+        <div class="suha-navbar-toggler d-flex justify-content-between flex-wrap" id="suhaNavbarToggler" data-step="1" data-intro="Functions related to customers."><span></span><span></span><span></span></div>
+      </div>
+{% endblock %}
+
+{% block content %}
+      <!-- Hero Slides-->
+      <div class="hero-slides owl-carousel" data-step="2" data-intro="Advertisments for a specific catalog.">
+        <!-- Single Hero Slide-->
+        <div class="single-hero-slide">
+          <div class="slide-img"><img style="opacity: 0.7;" src="{% static 'online-store/img/banner/banner_131.jpeg' %}" alt=""></div>
+          <div class="slide-content h-100 d-flex align-items-center">
+            <div class="container">
+              <h4 class="text-dark mb-0" data-animation="fadeInUp" data-delay="100ms" data-wow-duration="1000ms">
+                Laoganma Spicy
+              </h4>
+              <a class="btn btn-success btn-sm" href="{% url 'store_products_product_list_page' %}?catalog_id=131" data-animation="fadeInUp" data-delay="800ms" data-wow-duration="1000ms">
+                Check Now
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Hero Slide-->
+        <div class="single-hero-slide">
+          <div class="slide-img"><img style="opacity: 0.7;" src="{% static 'online-store/img/banner/banner_137.jpeg' %}" alt=""></div>
+          <div class="slide-content h-100 d-flex align-items-center">
+            <div class="container">
+              <h4 class="text-dark mb-0" data-animation="fadeInUp" data-delay="100ms" data-wow-duration="1000ms">
+                Chinese Noodles
+              </h4>
+              <a class="btn btn-success btn-sm" href="{% url 'store_products_product_list_page' %}?catalog_id=137" data-animation="fadeInUp" data-delay="500ms" data-wow-duration="1000ms">
+                Check Now
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Hero Slide-->
+        <div class="single-hero-slide">
+          <div class="slide-img"><img style="opacity: 0.7;" src="{% static 'online-store/img/banner/banner_788.jpeg' %}" alt=""></div>
+          <div class="slide-content h-100 d-flex align-items-center">
+            <div class="container">
+              <h4 class="mb-0 text-dark" data-animation="fadeInUp" data-delay="100ms" data-wow-duration="1000ms">
+                Wangzai Milk
+              </h4>
+              <a class="btn btn-success btn-sm" href="{% url 'store_products_product_list_page' %}?catalog_id=788" data-animation="fadeInUp" data-delay="800ms" data-wow-duration="1000ms">
+                Check Now
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Hero Slide-->
+        <div class="single-hero-slide">
+          <div class="slide-img"><img style="opacity: 0.7;" src="{% static 'online-store/img/banner/banner_829.jpeg' %}" alt=""></div>
+          <div class="slide-content h-100 d-flex align-items-center">
+            <div class="container">
+              <h4 class="mb-0 text-dark" data-animation="fadeInUp" data-delay="100ms" data-wow-duration="1000ms">
+                Chinese Wok
+              </h4>
+              <a class="btn btn-success btn-sm" href="{% url 'store_products_product_list_page' %}?catalog_id=829" data-animation="fadeInUp" data-delay="800ms" data-wow-duration="1000ms">
+                Check Now
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Hero Slide-->
+        <div class="single-hero-slide">
+          <div class="slide-img"><img style="opacity: 0.7;" src="{% static 'online-store/img/banner/banner_853.jpeg' %}" alt=""></div>
+          <div class="slide-content h-100 d-flex align-items-center">
+            <div class="container">
+              <h4 class="mb-0 text-dark" data-animation="fadeInUp" data-delay="100ms" data-wow-duration="1000ms">
+                Fresh Fish
+              </h4>
+              <a class="btn btn-success btn-sm" href="{% url 'store_products_product_list_page' %}?catalog_id=853" data-animation="fadeInUp" data-delay="800ms" data-wow-duration="1000ms">
+                Check Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br/>
+      
+      <!-- Flash Sale Slide-->
+      <div class="flash-sale-wrapper pb-3" data-step="3" data-intro="Products related to chinese students. (All data randomization)">
+        <div class="container">
+          <div class="section-heading d-flex align-items-center justify-content-between">
+            <h6 class="ml-1">Products from China</h6>
+          </div>
+          <!-- Flash Sale Slide-->
+          <div class="flash-sale-slide owl-carousel">
+            {% for product in product_list_new.hits.hits %}
+              {% include 'online-store/segment/product-square-show-seg.html' with product_flag=tagsection_product_flag scroll_flag=tagsection_scroll_flag tag_show_flag=tagsection_tag_show_flag %} 
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Bestseller Products-->
+      <div class="top-products-area clearfix" data-step="3" data-intro="Bestseller products. (All data randomization)">
+        <div class="container">
+          <div class="section-heading d-flex align-items-center justify-content-between">
+            <h6 class="ml-1">Bestsellers</h6>
+          </div>
+
+          <div class="row">
+            {% for product in product_list_sales_rank.hits.hits %}
+              {% include 'online-store/segment/product-square-show-seg.html' with product_flag=bestsellersection_product_flag scroll_flag=bestsellersection_scroll_flag tag_show_flag=bestsellersection_tag_show_flag %} 
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+{% endblock %}
+
+{% block extrascripts %}
+<script>
+  if ($.cookie('intro-complete-home') == undefined){
+    introJs().start().oncomplete(function(targetElement) {
+      $.cookie('intro-complete-home', true);  
+    }).onexit(function(){
+      $.cookie('intro-complete-home', true);   
+    });
+  }
+
+  var flashSlide = $('.flash-sale-slide');
+  flashSlide.owlCarousel({
+      items: 2.5,
+      margin: 10,
+      loop: true,
+      smartSpeed: 800,
+      autoplay: true,
+      autoplayTimeout: 2500,
+      stopOnHover: true,
+      dots: false,
+      nav: false
+  })
+
+  $(window).scroll(function(){
+    page_scroll_detector("store/ajax-product-list-home", null, '{{ product_list_sales_rank.hits.total.value }}', ".container > .row", null);
+  });
+  
+</script>
+{% endblock %}
