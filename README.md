@@ -1,3 +1,5 @@
+Project Wiki: https://github.com/liuninglin/pandama/wiki
+
 ## Project Brief
 
 [![Gitbook Badge](https://img.shields.io/badge/Gitbook-Pandama-yellow)](https://ninglin-liu.gitbook.io/pandama)<space><space>
