@@ -2,7 +2,7 @@ Project Wiki: https://github.com/liuninglin/pandama/wiki
 
 ## Project Brief
 
-[![Gitbook Badge](https://img.shields.io/badge/Gitbook-Pandama-yellow)](https://ninglin-liu.gitbook.io/pandama)<space><space>
+[![Wiki Badge](https://img.shields.io/badge/Wiki-yellow)](https://github.com/liuninglin/pandama/wiki)<space><space>
 ![License Badge](https://img.shields.io/badge/License-MIT%20License-blue)<space><space>
 ![Python Badge](https://img.shields.io/badge/Python-3.8-brightgreen)<space><space>
 ![Django Badge](https://img.shields.io/badge/Django-3.2-green)<space><space>
