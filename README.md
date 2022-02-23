@@ -5,6 +5,8 @@
 ![Python Badge](https://img.shields.io/badge/Python-3.8-brightgreen)<space><space>
 ![Django Badge](https://img.shields.io/badge/Django-3.2-green)<space><space>
 
+ Wiki: https://github.com/liuninglin/pandama/wiki
+  
 As Chinese students, we hope to buy all kinds of Chinese goods in Pittsburgh. Usually, we choose to buy at Lotus Supermarket, but the online shopping platform of Lotus is not good. When purchasing various daily necessities and food, we found that there were various problems in the interface of the Lotus website. For example, its recharge button may fail. If you click the button several times in a row, you will be charged more than once. Its account management is also very problematic, and the password of an account can be changed without verification. Our group wants to build a shopping platform like Lotus supermarket to provide groceries for Chinese students.
 
 ## The meaning of the project name
