@@ -11,7 +11,7 @@
 
 ## Website Preview
 
-![preview](./docs/assets/preview.gif)
+![preview](./docs/assets/preview-small.gif)
 
 ## Vision
 
