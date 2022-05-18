@@ -1,7 +1,7 @@
 
 ![logo](./docs/assets/logo.png)
 
-[![Wiki Badge](https://img.shields.io/badge/Gitbook-Pandama-yellow)](https://github.com/liuninglin/pandama/wiki)<space><space>
+[![Gitbook Badge](https://img.shields.io/badge/Gitbook-Pandama-yellow)](https://ninglin-liu.gitbook.io/pandama)<space><space>
 ![Django Badge](https://img.shields.io/badge/Django-3.2-green)<space><space>
 
 ## Website Preview
@@ -23,3 +23,55 @@ Pandama = Panda + ma. "Panda" is the symbol of China, it represents the Chinese 
 ## Tech Arch
 
 ![preview](./docs/assets/tech_arch.png)
+
+## Getting started
+
+Steps for Running Pandama in Local Docker:
+1. Configuration
+   1. Put your custom env file under the env folder
+   2. Set your secret key and access key for your AWS account
+   3. Change your S3 access URL
+2. Run by docker compose
+   ```bash
+   docker-compose up
+   ```
+3. Create products from Pittsburgh chinese lotus online store
+   ```bash
+   curl -x POST localhost/operation/spider_execute
+   ```
+4. Access Pandama with mobile mode in browser(Chrome)
+   ```
+   http://localhost
+   ```
+5. Stop docker compose
+    ```bash
+    docker-compose down
+    ```
+
+## URL for Pandama
+
+- Pandama webiste
+  - http://localhost
+- Kibana / APM
+  - http://localhost:5601
+- PostgreSQL
+  - port: 5432
+  - username: pandama
+  - pass: pandama
+  - db: pandama
+- Redis: 
+  - port: 6379
+  - auth: pandama
+- MongoDB
+  - port: 27017
+  - username: pandama
+  - pass: pandama
+  - db: pandama
+- Neo4j: 
+  - http://localhost:7474/browser
+  - auth: neo4j/pandama
+- Elasticsearch
+  - port: 9200
+  - pass: pandama
+- RabbitMQ: 
+  - http://localhost:15672/
