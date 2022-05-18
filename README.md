@@ -16,6 +16,15 @@ As Chinese students, we hope to buy all kinds of Chinese goods in Pittsburgh. Us
 
 Pandama = Panda + ma. "Panda" is the symbol of China, it represents the Chinese featured products on our websites. The pronunciation of "DaMa" is the same as the Chinese character "大妈" which means the grandmother in English. The name gives homesick Chinese students a feeling of sweet home and their own lovely grandmother. So, visiting the Pandama is just like coming back home and taking a tasty dinner made by your grandmother.
 
+## Contributors
+
+| Name          | Department                    | Contributions                                  |
+| ------------- | ----------------------------- | ------------------------------------------ |
+| Ninglin Liu   | CMU Heinz College - MISM      | Lead Team / Develop / Deployment / Docker Configuration |
+| [Jianbing Gong](https://github.com/JianbinGong) | CMU Heinz College - MISM      | Develop |
+| [Shu Wu](https://github.com/Sukeastree)        | CMU Heinz College - MISM      | Develop      |
+| [Xiaoting Wang](https://github.com/makethedayunique) | CMU Heinz College - MISM BIDA | Develop |
+
 ## Features
 
 ![preview](./docs/assets/features.png)
