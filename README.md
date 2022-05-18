@@ -10,7 +10,7 @@
 
 ## Vision
 
-As Chinese students, we hope to buy all kinds of Chinese goods in Pittsburgh. Usually, we choose to buy at Lotus Supermarket, but the online shopping platform of Lotus is not good. When purchasing various daily necessities and food, we found that there were various problems in the interface of the Lotus website. For example, its recharge button may fail. If you click the button several times in a row, you will be charged more than once. Its account management is also very problematic, and the password of an account can be changed without verification. Our group wants to build a shopping platform like Lotus supermarket to provide groceries for Chinese students.
+As Chinese students, we hope to buy all kinds of Chinese goods in Pittsburgh. Usually, we choose to buy at Lotus Supermarket, but the online shopping platform of Lotus is not good. When purchasing various daily necessities and food, we found that there were various problems with the interface of the Lotus website. For example, its recharge button may fail. If you click the button several times in a row, you will be charged more than once. Its account management is also very problematic, and the password of an account can be changed without verification. Our group wants to build a shopping platform like Lotus supermarket to provide groceries for Chinese students.
 
 ## The meaning of the project name
 
@@ -18,7 +18,7 @@ Pandama = Panda + ma. "Panda" is the symbol of China, it represents the Chinese 
 
 ## Contributors
 
-This project came from my team project in CMU course 17637 taught by Jeffrey Eppinger and Sujata Telang, team members shows below. And later I add more monitoring features and docker configuration into this project.
+This project came from my team project in CMU course 17637 taught by Jeffrey Eppinger and Sujata Telang, team members are shown below. And later I add more monitoring features and docker configuration into this project.
 
 | Name          | Department                    | Contributions                                  |
 | ------------- | ----------------------------- | ------------------------------------------ |
@@ -27,14 +27,14 @@ This project came from my team project in CMU course 17637 taught by Jeffrey Epp
 | [Shu Wu](https://github.com/Sukeastree)        | CMU Heinz College - MISM      | Develop      |
 | [Xiaoting Wang](https://github.com/makethedayunique) | CMU Heinz College - MISM BIDA | Develop |
 
-## Acknowledge
+## Acknowledgement
 
-All products data crawled from [Lotus Food](https://www.lotusfoodonline.com/#/home).
+All product data crawled from [Lotus Food](https://www.lotusfoodonline.com/#/home).
 
 ## Future Works
 
 - Transform to Django REST framework
-- Using Kubernetes to implement microservices architecture
+- Using Kubernetes to implement a microservices architecture
 - Deploy apps into Kubernetes cluster in AWS
 - Add management features
 - (Optional) Try Service Mesh
@@ -63,12 +63,12 @@ Steps for Running Pandama in Local Docker:
    ```bash
    curl -x POST localhost/operation/spider_execute
    ```
-4. Access Pandama with mobile mode in browser(Chrome)
+4. Access Pandama with the mobile mode in the browser(Chrome)
    ```
    http://localhost
    ```
 5. Stop docker compose
-    Click "Ctrl" + "C" to force stop, then type commands below
+    Click "Ctrl" + "C" to force stop, then type the commands below
     ```bash
     docker-compose down
     ```
