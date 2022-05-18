@@ -54,6 +54,7 @@ Steps for Running Pandama in Local Docker:
    ```bash
    docker-compose up
    ```
+   ![docker compose](./docs/assets/docker-compose-up.gif)
 3. Create products from Pittsburgh chinese lotus online store
    ```bash
    curl -x POST localhost/operation/spider_execute
@@ -63,9 +64,11 @@ Steps for Running Pandama in Local Docker:
    http://localhost
    ```
 5. Stop docker compose
+    Click "Ctrl" + "C" to force stop, then type commands below
     ```bash
     docker-compose down
     ```
+    ![docker compose](./docs/assets/docker-compose-down.gif)
 
 ## URL for Pandama
 
