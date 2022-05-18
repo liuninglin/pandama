@@ -18,12 +18,22 @@ Pandama = Panda + ma. "Panda" is the symbol of China, it represents the Chinese 
 
 ## Contributors
 
+This project came from my team project in CMU course 17637 taught by Jeffrey Eppinger and Sujata Telang, team members shows below. And later I add more monitoring features and docker configuration into this project.
+
 | Name          | Department                    | Contributions                                  |
 | ------------- | ----------------------------- | ------------------------------------------ |
 | Ninglin Liu   | CMU Heinz College - MISM      | Lead Team / Develop / Deployment / Docker Configuration |
 | [Jianbing Gong](https://github.com/JianbinGong) | CMU Heinz College - MISM      | Develop |
 | [Shu Wu](https://github.com/Sukeastree)        | CMU Heinz College - MISM      | Develop      |
 | [Xiaoting Wang](https://github.com/makethedayunique) | CMU Heinz College - MISM BIDA | Develop |
+
+## Future Works
+
+- Transform to Django REST framework
+- Using Kubernetes to implement microservices architecture
+- Deploy apps into Kubernetes cluster in AWS
+- Add management features
+- (Optional) Try Service Mesh
 
 ## Features
 
