@@ -3,7 +3,7 @@
   <img src="./docs/assets/logo.png">
 </p>
 
-[![Gitbook Badge](https://img.shields.io/badge/Gitbook-Pandama-yellow)](https://ninglin-liu.gitbook.io/pandama)<space><space>
+[![Gitbook Badge](https://img.shields.io/badge/Wiki-Pandama-yellow)](https://github.com/liuninglin/pandama/wiki)
 ![Django Badge](https://img.shields.io/badge/Django-3.2-green)<space><space>
 
 ## Website Preview
