@@ -27,6 +27,10 @@ This project came from my team project in CMU course 17637 taught by Jeffrey Epp
 | [Shu Wu](https://github.com/Sukeastree)        | CMU Heinz College - MISM      | Develop      |
 | [Xiaoting Wang](https://github.com/makethedayunique) | CMU Heinz College - MISM BIDA | Develop |
 
+## Acknowledge
+
+All products data crawled from [Lotus Food](https://www.lotusfoodonline.com/#/home).
+
 ## Future Works
 
 - Transform to Django REST framework
